@@ -1,33 +1,29 @@
 import React from 'react';
-import { FormikProps, Form, Field } from 'formik';
+import {FormikProps, Form, Field} from 'formik';
+import {FormValues} from "./AddingCategoryFormContainer";
 
 
-type FormValues = {
-  email: string
-  password: string
-}
+const AddingCategoryForm = (props: FormikProps<FormValues>) => {
+    const {touched, errors, isSubmitting} = props;
+    return (
+        <Form>
+            <h1>Добавить жанр</h1>
+            <div>
+                <Field type="text" name="name" placeholder="Название жанра"/>
+                {touched.name && errors.name && <div>{errors.name}</div>}
+            </div>
 
-type OtherProps = {
-  message: string
-}
+            <div>
+                <Field type="text" name="name" placeholder="Описание жанра"/>
+                {touched.description && errors.description && <div>{errors.description}</div>}
+            </div>
 
 
-const AddingCategoryForm = (props: OtherProps & FormikProps<FormValues>) => {
-  const { touched, errors, isSubmitting, message } = props;
-  return (
-    <Form>
-      <h1>{message}</h1>
-      <Field type="email" name="email" />
-      {touched.email && errors.email && <div>{errors.email}</div>}
-
-      <Field type="password" name="password" />
-      {touched.password && errors.password && <div>{errors.password}</div>}
-
-      <button type="submit" disabled={isSubmitting}>
-        Submit
-      </button>
-    </Form>
-  );
+            <button type="submit" disabled={isSubmitting}>
+                Добавить
+            </button>
+        </Form>
+    );
 };
 
 export default AddingCategoryForm;
