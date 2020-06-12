@@ -11,4 +11,4 @@ const schema = new Schema({
 	year: Number
 });
 
-module.exports = model('Product', schema);
+module.exports = model('Book', schema);

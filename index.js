@@ -1,10 +1,18 @@
 const express = require('express');
 const config = require('config');
 const mongoose = require('mongoose');
+const graphqlHTTP = require('express-graphql');
+const schema = require("./graphql/schema")
+const resolver = require("./graphql/resolver")
 
 const app = express();
+
 app.use(express.json({ extended: true }));
-app.use('/api/books', require('./routes/books.routes'));
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: resolver,
+  graphiql: true,
+}));
 
 const PORT = config.get('port') || 5000;
 
