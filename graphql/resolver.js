@@ -6,9 +6,10 @@ module.exports = {
 			const category = new Category({
 				name, description
 			})
-			await category.save();
+			await category.save()
+			return category
 		} catch(e) {
-			console.log(e);
+			throw new Error('Ошибка добавления категории')
 		}
 	}
 }

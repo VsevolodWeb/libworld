@@ -1,16 +1,20 @@
 const {buildSchema} = require("graphql")
 
 module.exports = buildSchema(`
-	input CategoryInput {
+	type CategoryType {
 		name: String!
 		description: String!
 	}
-	type CategoryType {
+	input CategoryInput {
 		name: String!
 		description: String!
 	}
 
 	type Mutation {
-		addCategory(category: CategoryInput!): CategoryType
+		addCategory(category: CategoryInput!): CategoryType!
+	}
+	
+	type Query {
+		hello: String
 	}
 `)
