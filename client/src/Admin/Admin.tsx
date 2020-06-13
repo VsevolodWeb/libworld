@@ -1,7 +1,7 @@
 import React from 'react'
-import AddingCategoryFormContainer from "./AddingCategoryForm/AddingCategoryFormContainer";
+import AddingCategoryForm from "./AddingCategoryForm/AddingCategoryForm"
 
 
 export default () => {
-    return <AddingCategoryFormContainer />
+    return <AddingCategoryForm />
 };

@@ -1,4 +1,4 @@
 {
 	"port": 5000,
-	"mongoURI": "mongodb+srv://vsevolod:1Lpbth15@cluster0-itwds.mongodb.net/<dbname>?retryWrites=true&w=majority"
+	"mongoURI": "mongodb+srv://vsevolod:1u2ZRWZg8Verm16S@clusterlibworld-9asug.mongodb.net/libworld?retryWrites=true&w=majority"
 }

@@ -1,29 +1,46 @@
-import React from 'react';
-import {FormikProps, Form, Field} from 'formik';
-import {FormValues} from "./AddingCategoryFormContainer";
+import * as React from 'react';
+import {
+    Formik,
+    Form,
+    Field,
+} from 'formik';
+import {addingCategoryThunkCreator, CategoryType} from "../../redux/categories-reducer";
+import {AppStateType} from "../../redux/store";
+import {connect} from "react-redux";
 
+type MapStateToProps = {}
+type MapDispatchToProps = {
+    addingCategoryThunkCreator: (category: CategoryType) => void
+}
+type OwnProps = {}
+type PropsType = MapStateToProps & MapDispatchToProps & OwnProps
 
-const AddingCategoryForm = (props: FormikProps<FormValues>) => {
-    const {touched, errors, isSubmitting} = props;
+const AddingCategoryForm: React.FC<PropsType> = props => {
+    const initialValues: CategoryType = {name: '', description: ''};
     return (
-        <Form>
-            <h1>Добавить жанр</h1>
-            <div>
-                <Field type="text" name="name" placeholder="Название жанра"/>
-                {touched.name && errors.name && <div>{errors.name}</div>}
-            </div>
-
-            <div>
-                <Field type="text" name="name" placeholder="Описание жанра"/>
-                {touched.description && errors.description && <div>{errors.description}</div>}
-            </div>
-
-
-            <button type="submit" disabled={isSubmitting}>
-                Добавить
-            </button>
-        </Form>
+        <div>
+            <h1>My Example</h1>
+            <Formik
+                initialValues={initialValues}
+                onSubmit={(values) => {
+                    props.addingCategoryThunkCreator(values);
+                }}
+            >
+                {() => (
+                    <Form>
+                        <Field name="name"/>
+                        <Field name="description"/>
+                        <button>Добавить новую категорию!</button>
+                    </Form>
+                )}
+            </Formik>
+        </div>
     );
 };
 
-export default AddingCategoryForm;
+const mapStateToProps = (): MapStateToProps => ({})
+
+export default connect<MapStateToProps, MapDispatchToProps, OwnProps, AppStateType>(
+    mapStateToProps,
+    {addingCategoryThunkCreator}
+)(AddingCategoryForm);

@@ -4,8 +4,8 @@ import {CategoryType} from "../redux/categories-reducer"
 export const categoriesAPI = {
     addCategory(category: CategoryType) {
         const query = `
-            query {
-                addCategory(${category}) {
+            mutation {
+                addCategory(category: ${category}) {
                     name description
                 }
             }
