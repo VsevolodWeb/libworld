@@ -4,24 +4,31 @@ import {
     Form,
     Field,
 } from 'formik';
-import {addingCategoryThunkCreator, CategoryType} from "../../redux/categories-reducer";
+import {addingCategoryThunkCreator, CategoryType, getCategoriesThunkCreator} from "../../redux/categories-reducer";
 import {AppStateType} from "../../redux/store";
 import {connect} from "react-redux";
+import {useEffect} from "react";
 
-type MapStateToProps = {}
+type MapStateToProps = {
+    categories: CategoryType[]
+}
 type MapDispatchToProps = {
     addingCategoryThunkCreator: (category: CategoryType) => void
+    getCategoriesThunkCreator: () => void
 }
 type OwnProps = {}
 type PropsType = MapStateToProps & MapDispatchToProps & OwnProps
 
-const AddingCategoryForm: React.FC<PropsType> = props => {
-    const initialValues: CategoryType = {name: '', description: ''};
+const AdminCategories: React.FC<PropsType> = props => {
+    useEffect(() => {
+        props.getCategoriesThunkCreator()
+    }, [props])
+
     return (
         <div>
-            <h1>My Example</h1>
+            <h1>Категории</h1>
             <Formik
-                initialValues={initialValues}
+                initialValues={{name: '', description: ''}}
                 onSubmit={(values) => {
                     props.addingCategoryThunkCreator(values);
                 }}
@@ -34,13 +41,23 @@ const AddingCategoryForm: React.FC<PropsType> = props => {
                     </Form>
                 )}
             </Formik>
+            <table>
+                {props.categories.map(item => (
+                    <tr>
+                        <td>{item.name}</td>
+                        <td>{item.description}</td>
+                    </tr>
+                ))}
+            </table>
         </div>
     );
 };
 
-const mapStateToProps = (): MapStateToProps => ({})
+const mapStateToProps = (state: AppStateType): MapStateToProps => ({
+    categories: state.categories.list
+})
 
 export default connect<MapStateToProps, MapDispatchToProps, OwnProps, AppStateType>(
     mapStateToProps,
-    {addingCategoryThunkCreator}
-)(AddingCategoryForm);
+    {addingCategoryThunkCreator, getCategoriesThunkCreator}
+)(AdminCategories);

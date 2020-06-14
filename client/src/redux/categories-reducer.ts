@@ -22,6 +22,9 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
         case "categories/ADD_CATEGORY": {
             return {...state, list: [...state.list, action.category]}
         }
+        case "categories/GET_CATEGORIES": {
+            return {...state, list: [...action.categories]}
+        }
         default: {
             return state;
         }
@@ -30,6 +33,7 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
 
 export const actions = {
     addCategory: (category: CategoryType) => ({type: 'categories/ADD_CATEGORY', category} as const),
+    getCategories: (categories: CategoryType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const),
 }
 
 export const addingCategoryThunkCreator = (category: CategoryType) => async (dispatch: Dispatch<ActionsTypes>) => {
@@ -37,7 +41,17 @@ export const addingCategoryThunkCreator = (category: CategoryType) => async (dis
         const response = await categoriesAPI.addCategory(category)
         dispatch(actions.addCategory(response))
     } catch (e) {
-        console.log(e);
+        console.log(e)
+    }
+}
+
+export const getCategoriesThunkCreator = () => async (dispatch: Dispatch<ActionsTypes>) => {
+    try {
+        const response = await categoriesAPI.getCategories()
+        console.log(response)
+        dispatch(actions.getCategories(response))
+    } catch (e) {
+        console.log(e)
     }
 }
 

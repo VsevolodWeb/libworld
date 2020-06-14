@@ -5,11 +5,21 @@ export const categoriesAPI = {
     addCategory(category: CategoryType) {
         const query = `
             mutation {
-                addCategory(category: ${category}) {
+                addCategory(category: {name: "${category.name}", description: "${category.description}"}) {
                     name description
                 }
             }
         `
         return api<CategoryType>(query);
+    },
+    getCategories() {
+        const query = `
+            query {
+              getCategories {
+                name, description
+              }
+            }
+        `
+        return api<CategoryType[]>(query);
     }
 }

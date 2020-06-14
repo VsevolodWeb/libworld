@@ -1,7 +1,7 @@
 import React from 'react'
-import AddingCategoryForm from "./AddingCategoryForm/AddingCategoryForm"
+import AdminCategories from "./AdminCategories/AdminCategories"
 
 
 export default () => {
-    return <AddingCategoryForm />
+    return <AdminCategories />
 };

@@ -15,6 +15,6 @@ module.exports = buildSchema(`
 	}
 	
 	type Query {
-		hello: String
+		getCategories: [CategoryType!]!
 	}
 `)
