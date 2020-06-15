@@ -15,9 +15,8 @@ module.exports = {
 	},
 	async getCategories() {
 		try {
-			return await Category.find({}, function() {
-
-			})
+			const response = await Category.find();
+			return response
 		} catch(e) {
 			throw new Error(`Ошибка добавления категории${e}`)
 		}

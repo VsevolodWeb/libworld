@@ -1,53 +1,87 @@
-import * as React from 'react';
+import React, {useEffect} from 'react';
 import {
     Formik,
     Form,
     Field,
 } from 'formik';
-import {addingCategoryThunkCreator, CategoryType, getCategoriesThunkCreator} from "../../redux/categories-reducer";
-import {AppStateType} from "../../redux/store";
+import * as Yup from 'yup';
 import {connect} from "react-redux";
-import {useEffect} from "react";
+import {
+    addingCategoryThunkCreator,
+    addingCategoryThunkCreatorErrorsType,
+    CategoryType,
+    getCategoriesThunkCreator
+} from "../../redux/categories-reducer";
+import {AppStateType} from "../../redux/store";
+
 
 type MapStateToProps = {
     categories: CategoryType[]
 }
 type MapDispatchToProps = {
-    addingCategoryThunkCreator: (category: CategoryType) => void
+    addingCategoryThunkCreator: (category: CategoryType, serErrors: addingCategoryThunkCreatorErrorsType) => void
     getCategoriesThunkCreator: () => void
 }
 type OwnProps = {}
 type PropsType = MapStateToProps & MapDispatchToProps & OwnProps
 
+
+const addingCategorySchema = Yup.object().shape<CategoryType>({
+    name: Yup.string()
+        .min(2, 'Too Short!')
+        .max(50, 'Too Long!')
+        .required('Required'),
+    description: Yup.string()
+        .min(2, 'Too Short!')
+        .max(50, 'Too Long!')
+        .required('Required')
+});
+
+
 const AdminCategories: React.FC<PropsType> = props => {
+    const getCategories = props.getCategoriesThunkCreator;
+
     useEffect(() => {
-        props.getCategoriesThunkCreator()
-    }, [props])
+        getCategories();
+    }, [getCategories])
 
     return (
         <div>
             <h1>Категории</h1>
             <Formik
                 initialValues={{name: '', description: ''}}
-                onSubmit={(values) => {
-                    props.addingCategoryThunkCreator(values);
+                onSubmit={(values, {setErrors}) => {
+                    props.addingCategoryThunkCreator(values, setErrors)
                 }}
+                validationSchema={addingCategorySchema}
             >
-                {() => (
+                {({errors, touched}) => (
                     <Form>
-                        <Field name="name"/>
-                        <Field name="description"/>
+                        <div>
+                            <Field name="name"/>
+                            {errors.name && touched.name ? (
+                                <div>{errors.name}</div>
+                            ) : null}
+                        </div>
+                        <div>
+                            <Field name="description"/>
+                            {errors.description && touched.description ? (
+                                <div>{errors.description}</div>
+                            ) : null}
+                        </div>
                         <button>Добавить новую категорию!</button>
                     </Form>
                 )}
             </Formik>
             <table>
-                {props.categories.map(item => (
-                    <tr>
+                <tbody>
+                {props.categories.map((item, key) => (
+                    <tr key={key}>
                         <td>{item.name}</td>
                         <td>{item.description}</td>
                     </tr>
                 ))}
+                </tbody>
             </table>
         </div>
     );

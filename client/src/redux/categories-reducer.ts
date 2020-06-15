@@ -1,6 +1,7 @@
 import {Dispatch} from "redux";
 import {InferActionsTypes} from "./store";
 import {categoriesAPI} from "../api/categories-api";
+import {FormikErrors} from "formik";
 
 export type CategoryType = {
     name: string
@@ -36,19 +37,20 @@ export const actions = {
     getCategories: (categories: CategoryType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const),
 }
 
-export const addingCategoryThunkCreator = (category: CategoryType) => async (dispatch: Dispatch<ActionsTypes>) => {
+export type addingCategoryThunkCreatorErrorsType = (errors: FormikErrors<CategoryType>) => void;
+export const addingCategoryThunkCreator = (category: CategoryType, setErrors: addingCategoryThunkCreatorErrorsType) => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
         const response = await categoriesAPI.addCategory(category)
         dispatch(actions.addCategory(response))
     } catch (e) {
         console.log(e)
+        setErrors({description: e.message})
     }
 }
 
 export const getCategoriesThunkCreator = () => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
         const response = await categoriesAPI.getCategories()
-        console.log(response)
         dispatch(actions.getCategories(response))
     } catch (e) {
         console.log(e)

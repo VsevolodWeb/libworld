@@ -1,4 +1,4 @@
-import api from "./api"
+import api, {ApiType} from "./api"
 import {CategoryType} from "../redux/categories-reducer"
 
 export const categoriesAPI = {
@@ -10,7 +10,7 @@ export const categoriesAPI = {
                 }
             }
         `
-        return api<CategoryType>(query);
+        return api<ApiType<"addCategory", CategoryType>>(query).then(response => response.data.addCategory);
     },
     getCategories() {
         const query = `
@@ -20,6 +20,6 @@ export const categoriesAPI = {
               }
             }
         `
-        return api<CategoryType[]>(query);
+        return api<ApiType<"getCategories", CategoryType[]>>(query).then(response => response.data.getCategories);
     }
 }
