@@ -10,7 +10,7 @@ export const categoriesAPI = {
                 }
             }
         `
-        return api<ApiType<"addCategory", CategoryType>>(query).then(response => response.data.addCategory);
+        return api<ApiType<"addCategory", CategoryType>>(query);
     },
     getCategories() {
         const query = `
@@ -20,6 +20,6 @@ export const categoriesAPI = {
               }
             }
         `
-        return api<ApiType<"getCategories", CategoryType[]>>(query).then(response => response.data.getCategories);
+        return api<ApiType<"getCategories", CategoryType[]>>(query);
     }
 }

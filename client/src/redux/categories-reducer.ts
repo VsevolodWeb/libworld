@@ -41,17 +41,24 @@ export type addingCategoryThunkCreatorErrorsType = (errors: FormikErrors<Categor
 export const addingCategoryThunkCreator = (category: CategoryType, setErrors: addingCategoryThunkCreatorErrorsType) => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
         const response = await categoriesAPI.addCategory(category)
-        dispatch(actions.addCategory(response))
+
+
+        if(!response.errors) {
+             dispatch(actions.addCategory(response.data.addCategory))
+        } else {
+            setErrors({description: response.errors[0].message})
+        }
     } catch (e) {
         console.log(e)
-        setErrors({description: e.message})
     }
 }
 
 export const getCategoriesThunkCreator = () => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
-        const response = await categoriesAPI.getCategories()
-        dispatch(actions.getCategories(response))
+        const response = await categoriesAPI.getCategories().catch(() => {
+            throw new Error("Ошибка получения категорий")
+        })
+        dispatch(actions.getCategories(response.data.getCategories))
     } catch (e) {
         console.log(e)
     }

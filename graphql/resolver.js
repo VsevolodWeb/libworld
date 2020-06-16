@@ -7,18 +7,26 @@ module.exports = {
 			const newCategory = new Category({
 				id: shortId.generate(), name, description
 			})
+
 			await newCategory.save()
 			return newCategory
 		} catch(e) {
-			throw new Error(`Ошибка добавления категории${e}`)
+			throw new Error(e)
 		}
 	},
 	async getCategories() {
 		try {
-			const response = await Category.find();
-			return response
+			return await Category.find();
 		} catch(e) {
-			throw new Error(`Ошибка добавления категории${e}`)
+			throw new Error(e)
+		}
+	},
+	
+	async removeCategory({id: number}) {
+		try {
+
+		} catch (e) {
+			
 		}
 	}
 }

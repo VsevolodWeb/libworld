@@ -1,7 +1,10 @@
+import {GraphQLError} from "graphql";
+
 export type ApiType<N extends string, T> = {
     data: {
         [K in N]: T
     }
+    errors: GraphQLError[]
 }
 
 export default async <ApiType>(query: string): Promise<ApiType> => {
@@ -10,9 +13,6 @@ export default async <ApiType>(query: string): Promise<ApiType> => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({query})
     })
-    if (!response.ok) {
-        throw new Error(response.statusText)
-    }
 
     // todo: вынести then в общий api вызов
     return await response.json()
