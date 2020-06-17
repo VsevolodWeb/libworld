@@ -4,6 +4,7 @@ import {categoriesAPI} from "../api/categories-api";
 import {FormikErrors} from "formik";
 
 export type CategoryType = {
+    id?: string
     name: string
     description: string
 }
@@ -34,30 +35,31 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
 
 export const actions = {
     addCategory: (category: CategoryType) => ({type: 'categories/ADD_CATEGORY', category} as const),
-    getCategories: (categories: CategoryType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const),
+    getCategories: (categories: CategoryType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const)
 }
 
-export type addingCategoryThunkCreatorErrorsType = (errors: FormikErrors<CategoryType>) => void;
-export const addingCategoryThunkCreator = (category: CategoryType, setErrors: addingCategoryThunkCreatorErrorsType) => async (dispatch: Dispatch<ActionsTypes>) => {
-    try {
-        const response = await categoriesAPI.addCategory(category)
+export type addingCategoryThunkCreatorType = (category: CategoryType, setErrors: (errors: FormikErrors<CategoryType>) => void) => void
+export const addingCategoryThunkCreator: addingCategoryThunkCreatorType = (category, setErrors) =>
+    async (dispatch: Dispatch<ActionsTypes>) => {
+        try {
+            const newCategory = await categoriesAPI.addCategory(category)
 
+            if (!newCategory.errors) {
+                console.log(newCategory.data.addCategory.name)
+                const categoryId = await categoriesAPI.getCategoryId(newCategory.data.addCategory.name)
 
-        if(!response.errors) {
-             dispatch(actions.addCategory(response.data.addCategory))
-        } else {
-            setErrors({description: response.errors[0].message})
+                dispatch(actions.addCategory({...newCategory.data.addCategory, id: categoryId}))
+            } else {
+                setErrors({description: newCategory.errors[0].message})
+            }
+        } catch (e) {
+            console.log(e)
         }
-    } catch (e) {
-        console.log(e)
     }
-}
 
 export const getCategoriesThunkCreator = () => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
-        const response = await categoriesAPI.getCategories().catch(() => {
-            throw new Error("Ошибка получения категорий")
-        })
+        const response = await categoriesAPI.getCategories()
         dispatch(actions.getCategories(response.data.getCategories))
     } catch (e) {
         console.log(e)

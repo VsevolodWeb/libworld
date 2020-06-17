@@ -7,8 +7,7 @@ import {
 import * as Yup from 'yup';
 import {connect} from "react-redux";
 import {
-    addingCategoryThunkCreator,
-    addingCategoryThunkCreatorErrorsType,
+    addingCategoryThunkCreator, addingCategoryThunkCreatorType,
     CategoryType,
     getCategoriesThunkCreator
 } from "../../redux/categories-reducer";
@@ -19,7 +18,7 @@ type MapStateToProps = {
     categories: CategoryType[]
 }
 type MapDispatchToProps = {
-    addingCategoryThunkCreator: (category: CategoryType, serErrors: addingCategoryThunkCreatorErrorsType) => void
+    addingCategoryThunkCreator: addingCategoryThunkCreatorType
     getCategoriesThunkCreator: () => void
 }
 type OwnProps = {}
@@ -79,6 +78,7 @@ const AdminCategories: React.FC<PropsType> = props => {
                     <tr key={key}>
                         <td>{item.name}</td>
                         <td>{item.description}</td>
+                        <td>{item.id}</td>
                     </tr>
                 ))}
                 </tbody>

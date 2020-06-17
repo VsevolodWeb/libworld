@@ -10,16 +10,29 @@ export const categoriesAPI = {
                 }
             }
         `
-        return api<ApiType<"addCategory", CategoryType>>(query);
+        return api<ApiType<"addCategory", CategoryType>>(query)
     },
     getCategories() {
         const query = `
             query {
               getCategories {
-                name, description
+                id name, description
               }
             }
         `
-        return api<ApiType<"getCategories", CategoryType[]>>(query);
+        return api<ApiType<"getCategories", CategoryType[]>>(query)
+    },
+    getCategoryId(name: string) {
+        const query = `
+            query {
+              getCategoryId("${name}") {
+                id
+              }
+            }
+        `
+        return api<ApiType<"getCategoryId", string>>(query).then(response => {
+            console.log(response)
+            return response.data.getCategoryId
+        })
     }
 }

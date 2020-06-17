@@ -16,17 +16,26 @@ module.exports = {
 	},
 	async getCategories() {
 		try {
-			return await Category.find();
+			return await Category.find()
+		} catch(e) {
+			throw new Error(e)
+		}
+	},
+
+	async getCategoryId({name}) {
+		try {
+			console.log(name)
+			return await Category.findOne({name}).then(response => response.id)
 		} catch(e) {
 			throw new Error(e)
 		}
 	},
 	
-	async removeCategory({id: number}) {
+	async removeCategory({id}) {
 		try {
-
+			return await Category.deleteOne(id)
 		} catch (e) {
-			
+			throw new Error(e)
 		}
 	}
 }
