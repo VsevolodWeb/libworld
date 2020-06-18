@@ -9,7 +9,7 @@ import {connect} from "react-redux";
 import {
     addingCategoryThunkCreator, addingCategoryThunkCreatorType,
     CategoryType,
-    getCategoriesThunkCreator
+    getCategoriesThunkCreator, removeCategoryThunkCreator
 } from "../../redux/categories-reducer";
 import {AppStateType} from "../../redux/store";
 
@@ -20,6 +20,7 @@ type MapStateToProps = {
 type MapDispatchToProps = {
     addingCategoryThunkCreator: addingCategoryThunkCreatorType
     getCategoriesThunkCreator: () => void
+    removeCategoryThunkCreator: (id: string) => void
 }
 type OwnProps = {}
 type PropsType = MapStateToProps & MapDispatchToProps & OwnProps
@@ -43,6 +44,10 @@ const AdminCategories: React.FC<PropsType> = props => {
     useEffect(() => {
         getCategories();
     }, [getCategories])
+
+    const removeCategory = (id: string) => {
+        props.removeCategoryThunkCreator(id)
+    }
 
     return (
         <div>
@@ -78,7 +83,9 @@ const AdminCategories: React.FC<PropsType> = props => {
                     <tr key={key}>
                         <td>{item.name}</td>
                         <td>{item.description}</td>
-                        <td>{item.id}</td>
+                        <td>
+                            <button onClick={() => {removeCategory(item.id!)}}>Удалить</button>
+                        </td>
                     </tr>
                 ))}
                 </tbody>
@@ -93,5 +100,5 @@ const mapStateToProps = (state: AppStateType): MapStateToProps => ({
 
 export default connect<MapStateToProps, MapDispatchToProps, OwnProps, AppStateType>(
     mapStateToProps,
-    {addingCategoryThunkCreator, getCategoriesThunkCreator}
+    {addingCategoryThunkCreator, getCategoriesThunkCreator, removeCategoryThunkCreator}
 )(AdminCategories);

@@ -27,6 +27,9 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
         case "categories/GET_CATEGORIES": {
             return {...state, list: [...action.categories]}
         }
+        case "categories/REMOVE_CATEGORY": {
+            return {...state, list: state.list.filter(item => item.id !== action.id)}
+        }
         default: {
             return state;
         }
@@ -35,7 +38,8 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
 
 export const actions = {
     addCategory: (category: CategoryType) => ({type: 'categories/ADD_CATEGORY', category} as const),
-    getCategories: (categories: CategoryType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const)
+    getCategories: (categories: CategoryType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const),
+    removeCategory: (id: string) => ({type: 'categories/REMOVE_CATEGORY', id} as const)
 }
 
 export type addingCategoryThunkCreatorType = (category: CategoryType, setErrors: (errors: FormikErrors<CategoryType>) => void) => void
@@ -45,10 +49,9 @@ export const addingCategoryThunkCreator: addingCategoryThunkCreatorType = (categ
             const newCategory = await categoriesAPI.addCategory(category)
 
             if (!newCategory.errors) {
-                console.log(newCategory.data.addCategory.name)
                 const categoryId = await categoriesAPI.getCategoryId(newCategory.data.addCategory.name)
 
-                dispatch(actions.addCategory({...newCategory.data.addCategory, id: categoryId}))
+                dispatch(actions.addCategory({...newCategory.data.addCategory, id: categoryId.data.getCategoryId}))
             } else {
                 setErrors({description: newCategory.errors[0].message})
             }
@@ -61,6 +64,16 @@ export const getCategoriesThunkCreator = () => async (dispatch: Dispatch<Actions
     try {
         const response = await categoriesAPI.getCategories()
         dispatch(actions.getCategories(response.data.getCategories))
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+export const removeCategoryThunkCreator = (id: string) => async (dispatch: Dispatch<ActionsTypes>) => {
+    try {
+        const response = await categoriesAPI.removeCategory(id)
+
+        dispatch(actions.removeCategory(response.data.removeCategory.id!))
     } catch (e) {
         console.log(e)
     }

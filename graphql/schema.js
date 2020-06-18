@@ -14,11 +14,11 @@ module.exports = buildSchema(`
 
 	type Mutation {
 		addCategory(category: CategoryInput!): CategoryType!
-		removeCategory(id: String!): Int!
+		removeCategory(id: String!): CategoryType
 	}
 	
 	type Query {
 		getCategories: [CategoryType!]!
-		getCategoryId(name: String!): String!
+		getCategoryId(name: String!): String
 	}
 `)

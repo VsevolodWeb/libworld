@@ -16,7 +16,7 @@ export const categoriesAPI = {
         const query = `
             query {
               getCategories {
-                id name, description
+                id name description
               }
             }
         `
@@ -25,14 +25,19 @@ export const categoriesAPI = {
     getCategoryId(name: string) {
         const query = `
             query {
-              getCategoryId("${name}") {
-                id
-              }
+              getCategoryId(name: "${name}")
             }
         `
-        return api<ApiType<"getCategoryId", string>>(query).then(response => {
-            console.log(response)
-            return response.data.getCategoryId
-        })
-    }
+        return api<ApiType<"getCategoryId", string>>(query)
+    },
+    removeCategory(id: String) {
+        const query = `
+            mutation {
+                removeCategory(id: "${id}") {
+                    id
+                }
+            }
+        `
+        return api<ApiType<"removeCategory", CategoryType>>(query)
+    },
 }
