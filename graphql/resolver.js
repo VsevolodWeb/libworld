@@ -44,5 +44,13 @@ module.exports = {
 		} catch (e) {
 			throw new Error(e)
 		}
-	}
+	},
+
+	async getCategory({id}) {
+		try {
+			return await Category.findOne({id})
+		} catch(e) {
+			throw new Error(e)
+		}
+	},
 }

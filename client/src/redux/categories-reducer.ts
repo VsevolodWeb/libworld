@@ -1,7 +1,7 @@
 import {Dispatch} from "redux";
 import {InferActionsTypes} from "./store";
 import {categoriesAPI} from "../api/categories-api";
-import {FormikErrors} from "formik";
+import {FormikErrors, FormikState} from "formik";
 
 export type CategoryType = {
     id?: string
@@ -42,8 +42,8 @@ export const actions = {
     removeCategory: (id: string) => ({type: 'categories/REMOVE_CATEGORY', id} as const)
 }
 
-export type addingCategoryThunkCreatorType = (category: CategoryType, setErrors: (errors: FormikErrors<CategoryType>) => void) => void
-export const addingCategoryThunkCreator: addingCategoryThunkCreatorType = (category, setErrors) =>
+export type addingCategoryThunkCreatorType = (category: CategoryType, setErrors: (errors: FormikErrors<CategoryType>) => void, resetForm: (nextState?: Partial<FormikState<CategoryType>>) => void) => void
+export const addingCategoryThunkCreator: addingCategoryThunkCreatorType = (category, setErrors, resetForm) =>
     async (dispatch: Dispatch<ActionsTypes>) => {
         try {
             const newCategory = await categoriesAPI.addCategory(category)
@@ -52,6 +52,7 @@ export const addingCategoryThunkCreator: addingCategoryThunkCreatorType = (categ
                 const categoryId = await categoriesAPI.getCategoryId(newCategory.data.addCategory.name)
 
                 dispatch(actions.addCategory({...newCategory.data.addCategory, id: categoryId.data.getCategoryId}))
+                resetForm()
             } else {
                 setErrors({description: newCategory.errors[0].message})
             }
@@ -64,6 +65,18 @@ export const getCategoriesThunkCreator = () => async (dispatch: Dispatch<Actions
     try {
         const response = await categoriesAPI.getCategories()
         dispatch(actions.getCategories(response.data.getCategories))
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+export const getCategoryThunkCreator = (id: string) => async (dispatch: Dispatch<ActionsTypes>) => {
+    try {
+        const response = await categoriesAPI.getCategory(id)
+
+        dispatch(actions.addCategory(response.data.getCategory))
+
+        return response.data.getCategory
     } catch (e) {
         console.log(e)
     }

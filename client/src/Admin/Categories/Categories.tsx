@@ -1,30 +1,8 @@
 import React, {useEffect} from 'react';
-import {
-    Formik,
-    Form,
-    Field,
-} from 'formik';
+import {Field, Form, Formik,} from 'formik';
 import * as Yup from 'yup';
-import {connect} from "react-redux";
-import {
-    addingCategoryThunkCreator, addingCategoryThunkCreatorType,
-    CategoryType,
-    getCategoriesThunkCreator, removeCategoryThunkCreator
-} from "../../redux/categories-reducer";
-import {AppStateType} from "../../redux/store";
-
-
-type MapStateToProps = {
-    categories: CategoryType[]
-}
-type MapDispatchToProps = {
-    addingCategoryThunkCreator: addingCategoryThunkCreatorType
-    getCategoriesThunkCreator: () => void
-    removeCategoryThunkCreator: (id: string) => void
-}
-type OwnProps = {}
-type PropsType = MapStateToProps & MapDispatchToProps & OwnProps
-
+import {addingCategoryThunkCreatorType, CategoryType} from "../../redux/categories-reducer";
+import {NavLink} from "react-router-dom";
 
 const addingCategorySchema = Yup.object().shape<CategoryType>({
     name: Yup.string()
@@ -38,15 +16,22 @@ const addingCategorySchema = Yup.object().shape<CategoryType>({
 });
 
 
-const AdminCategories: React.FC<PropsType> = props => {
-    const getCategories = props.getCategoriesThunkCreator;
+type PropsType = {
+    getCategories: () => void
+    removeCategory: (id: string) => void
+    addingCategory: addingCategoryThunkCreatorType
+    categories: CategoryType[]
+}
+
+const Categories: React.FC<PropsType> = props => {
+    const getCategories = props.getCategories;
 
     useEffect(() => {
         getCategories();
     }, [getCategories])
 
     const removeCategory = (id: string) => {
-        props.removeCategoryThunkCreator(id)
+        props.removeCategory(id)
     }
 
     return (
@@ -54,8 +39,8 @@ const AdminCategories: React.FC<PropsType> = props => {
             <h1>Категории</h1>
             <Formik
                 initialValues={{name: '', description: ''}}
-                onSubmit={(values, {setErrors}) => {
-                    props.addingCategoryThunkCreator(values, setErrors)
+                onSubmit={(values, {setErrors, resetForm}) => {
+                    props.addingCategory(values, setErrors, resetForm)
                 }}
                 validationSchema={addingCategorySchema}
             >
@@ -68,7 +53,7 @@ const AdminCategories: React.FC<PropsType> = props => {
                             ) : null}
                         </div>
                         <div>
-                            <Field name="description"/>
+                            <Field name="description" as="textarea"/>
                             {errors.description && touched.description ? (
                                 <div>{errors.description}</div>
                             ) : null}
@@ -81,10 +66,15 @@ const AdminCategories: React.FC<PropsType> = props => {
                 <tbody>
                 {props.categories.map((item, key) => (
                     <tr key={key}>
-                        <td>{item.name}</td>
+                        <td>
+                            <NavLink to={`/admin/categories/${item.id}`}>{item.name}</NavLink>
+                        </td>
                         <td>{item.description}</td>
                         <td>
-                            <button onClick={() => {removeCategory(item.id!)}}>Удалить</button>
+                            <button onClick={() => {
+                                removeCategory(item.id!)
+                            }}>Удалить
+                            </button>
                         </td>
                     </tr>
                 ))}
@@ -94,11 +84,4 @@ const AdminCategories: React.FC<PropsType> = props => {
     );
 };
 
-const mapStateToProps = (state: AppStateType): MapStateToProps => ({
-    categories: state.categories.list
-})
-
-export default connect<MapStateToProps, MapDispatchToProps, OwnProps, AppStateType>(
-    mapStateToProps,
-    {addingCategoryThunkCreator, getCategoriesThunkCreator, removeCategoryThunkCreator}
-)(AdminCategories);
+export default Categories;

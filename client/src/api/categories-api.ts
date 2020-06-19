@@ -22,6 +22,16 @@ export const categoriesAPI = {
         `
         return api<ApiType<"getCategories", CategoryType[]>>(query)
     },
+    getCategory(id: string) {
+        const query = `
+            query {
+              getCategory(id: "${id}") {
+                id name description
+              }
+            }
+        `
+        return api<ApiType<"getCategory", CategoryType>>(query)
+    },
     getCategoryId(name: string) {
         const query = `
             query {
