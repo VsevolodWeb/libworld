@@ -30,6 +30,14 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
         case "categories/REMOVE_CATEGORY": {
             return {...state, list: state.list.filter(item => item.id !== action.id)}
         }
+        case "categories/UPDATE_CATEGORY": {
+            const newList = [...state.list];
+            const candidateId = newList.findIndex((el => el.id === action.category.id))
+
+            newList[candidateId] = action.category
+
+            return {...state, list: [...newList]}
+        }
         default: {
             return state;
         }
@@ -39,7 +47,8 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
 export const actions = {
     addCategory: (category: CategoryType) => ({type: 'categories/ADD_CATEGORY', category} as const),
     getCategories: (categories: CategoryType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const),
-    removeCategory: (id: string) => ({type: 'categories/REMOVE_CATEGORY', id} as const)
+    removeCategory: (id: string) => ({type: 'categories/REMOVE_CATEGORY', id} as const),
+    updateCategory: (category: CategoryType) => ({type: 'categories/UPDATE_CATEGORY', category} as const)
 }
 
 export type addingCategoryThunkCreatorType = (category: CategoryType, setErrors: (errors: FormikErrors<CategoryType>) => void, resetForm: (nextState?: Partial<FormikState<CategoryType>>) => void) => void
@@ -87,6 +96,17 @@ export const removeCategoryThunkCreator = (id: string) => async (dispatch: Dispa
         const response = await categoriesAPI.removeCategory(id)
 
         dispatch(actions.removeCategory(response.data.removeCategory.id!))
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+export const updateCategoryThunkCreator = (category: CategoryType) => async (dispatch: Dispatch<ActionsTypes>) => {
+    try {
+        const response = await categoriesAPI.updateCategory(category)
+        console.log(category)
+
+        dispatch(actions.updateCategory(response.data.updateCategory))
     } catch (e) {
         console.log(e)
     }

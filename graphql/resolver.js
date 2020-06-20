@@ -36,11 +36,7 @@ module.exports = {
 	
 	async removeCategory({id}) {
 		try {
-			const candidate = await Category.findOne({id})
-
-			await Category.deleteOne({id: candidate.id})
-
-			return candidate
+			return await Category.findOneAndDelete({id})
 		} catch (e) {
 			throw new Error(e)
 		}
@@ -49,6 +45,14 @@ module.exports = {
 	async getCategory({id}) {
 		try {
 			return await Category.findOne({id})
+		} catch(e) {
+			throw new Error(e)
+		}
+	},
+
+	async updateCategory({category}) {
+		try {
+			return await Category.findOneAndUpdate({id: category.id}, {...category}, {new: true})
 		} catch(e) {
 			throw new Error(e)
 		}

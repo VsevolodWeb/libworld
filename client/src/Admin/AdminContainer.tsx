@@ -4,7 +4,7 @@ import {
     addingCategoryThunkCreator,
     addingCategoryThunkCreatorType,
     CategoryType,
-    getCategoriesThunkCreator, getCategoryThunkCreator, removeCategoryThunkCreator
+    getCategoriesThunkCreator, getCategoryThunkCreator, removeCategoryThunkCreator, updateCategoryThunkCreator
 } from "../redux/categories-reducer";
 import {AppStateType} from "../redux/store";
 import {connect} from "react-redux";
@@ -16,7 +16,8 @@ export type MapDispatchToProps = {
     addingCategoryThunkCreator: addingCategoryThunkCreatorType
     getCategoriesThunkCreator: () => void
     removeCategoryThunkCreator: (id: string) => void
-    getCategoryThunkCreator: (id: string) => void
+    getCategoryThunkCreator: (id: string) => Promise<any>
+    updateCategoryThunkCreator: (category: CategoryType) => void
 }
 type OwnProps = {}
 type PropsType = MapStateToProps & MapDispatchToProps & OwnProps
@@ -30,7 +31,13 @@ const mapStateToProps = (state: AppStateType): MapStateToProps => ({
     categories: state.categories.list
 })
 
-export default connect<MapStateToProps, MapDispatchToProps, OwnProps, AppStateType>(
+export default connect(
     mapStateToProps,
-    {addingCategoryThunkCreator, getCategoriesThunkCreator, removeCategoryThunkCreator, getCategoryThunkCreator}
+    {
+        addingCategoryThunkCreator,
+        getCategoriesThunkCreator,
+        removeCategoryThunkCreator,
+        getCategoryThunkCreator,
+        updateCategoryThunkCreator
+    }
 )(AdminContainer);

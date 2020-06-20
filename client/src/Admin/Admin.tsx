@@ -21,7 +21,7 @@ const Admin: React.FC<PropsType> = props => {
             </Route>
             <Route path="/admin/categories/:id">
                 <Suspense fallback={<div>Загрузка</div>}>
-                    <Edit getCategory={props.getCategoryThunkCreator}/>
+                    <Edit getCategory={props.getCategoryThunkCreator} updateCategory={props.updateCategoryThunkCreator}/>
                 </Suspense>
             </Route>
             <Route path="/">

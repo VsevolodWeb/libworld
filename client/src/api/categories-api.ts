@@ -50,4 +50,14 @@ export const categoriesAPI = {
         `
         return api<ApiType<"removeCategory", CategoryType>>(query)
     },
+    updateCategory(category: CategoryType) {
+        const query = `
+            mutation {
+                updateCategory(category: "${category}") {
+                    id name description
+                }
+            }
+        `
+        return api<ApiType<"updateCategory", CategoryType>>(query)
+    },
 }

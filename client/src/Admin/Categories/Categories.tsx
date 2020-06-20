@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import {addingCategoryThunkCreatorType, CategoryType} from "../../redux/categories-reducer";
 import {NavLink} from "react-router-dom";
 
-const addingCategorySchema = Yup.object().shape<CategoryType>({
+export const CategorySchema = Yup.object().shape<CategoryType>({
     name: Yup.string()
         .min(2, 'Too Short!')
         .max(50, 'Too Long!')
@@ -42,7 +42,7 @@ const Categories: React.FC<PropsType> = props => {
                 onSubmit={(values, {setErrors, resetForm}) => {
                     props.addingCategory(values, setErrors, resetForm)
                 }}
-                validationSchema={addingCategorySchema}
+                validationSchema={CategorySchema}
             >
                 {({errors, touched}) => (
                     <Form>
