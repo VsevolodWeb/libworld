@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {Field, Form, Formik,} from 'formik';
 import * as Yup from 'yup';
-import {addingCategoryThunkCreatorType, CategoryType} from "../../redux/categories-reducer";
+import {addingCategoryThunkCreatorType, CategoryType} from "../../../store/categories-reducer";
 import {NavLink} from "react-router-dom";
 
 export const CategorySchema = Yup.object().shape<CategoryType>({

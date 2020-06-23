@@ -1,0 +1,16 @@
+.container
+	margin:
+		left: auto
+		right: auto
+	padding:
+		left: 15px
+		right: 15px
+
+	@include respond-above(lg)
+		width: 1147px
+
+	@include respond-between(md, lg)
+		width: 960px
+
+	@include respond-between(sm, md)
+		width: 720px

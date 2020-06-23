@@ -1,5 +1,5 @@
 import api, {ApiType} from "./api"
-import {CategoryType} from "../redux/categories-reducer"
+import {CategoryType} from "../store/categories-reducer"
 
 export const categoriesAPI = {
     addCategory(category: CategoryType) {
@@ -53,7 +53,7 @@ export const categoriesAPI = {
     updateCategory(category: CategoryType) {
         const query = `
             mutation {
-                updateCategory(category: "${category}") {
+                updateCategory(category: {id: "${category.id}", name: "${category.name}", description: "${category.description}"}) {
                     id name description
                 }
             }

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom"
-import {CategoryType} from "../../../redux/categories-reducer";
+import {CategoryType} from "../../../../store/categories-reducer";
 import {Field, Form, Formik} from "formik";
 import {CategorySchema} from "../Categories";
 
@@ -27,7 +27,7 @@ const Edit: React.FC<PropsType> = props => {
                 initialValues={{name: category?.name, description: category?.description}}
                 validationSchema={CategorySchema}
                 onSubmit={(values) => {
-                    props.updateCategory(values)
+                    props.updateCategory({...values, id})
                 }}>
                 {({errors, touched}) => (
                     <Form>

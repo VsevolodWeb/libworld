@@ -1,0 +1,25 @@
+@import "../../../styles/components/link"
+
+.wrapper
+	padding:
+		top: 2rem
+		bottom: 2rem
+		
+.inner
+	display: flex
+	align-items: center
+		
+.menu
+	display: flex
+	margin-left: auto
+	
+	> li:not(:last-child)
+		margin-right: 3rem
+		
+	
+	&__link
+		@extend .link
+		font:
+			size: .9rem
+			weight: 700
+		

@@ -5,8 +5,8 @@ import {
     addingCategoryThunkCreatorType,
     CategoryType,
     getCategoriesThunkCreator, getCategoryThunkCreator, removeCategoryThunkCreator, updateCategoryThunkCreator
-} from "../redux/categories-reducer";
-import {AppStateType} from "../redux/store";
+} from "../../store/categories-reducer";
+import {AppStateType} from "../../store/store";
 import {connect} from "react-redux";
 
 export type MapStateToProps = {
