@@ -9,10 +9,10 @@ import {
 import {AppStateType} from "../../store/store";
 import {connect} from "react-redux";
 
-export type MapStateToProps = {
+type MapStateToProps = {
     categories: CategoryType[]
 }
-export type MapDispatchToProps = {
+type MapDispatchToProps = {
     addingCategoryThunkCreator: addingCategoryThunkCreatorType
     getCategoriesThunkCreator: () => void
     removeCategoryThunkCreator: (id: string) => void
@@ -20,7 +20,7 @@ export type MapDispatchToProps = {
     updateCategoryThunkCreator: (category: CategoryType) => void
 }
 type OwnProps = {}
-type PropsType = MapStateToProps & MapDispatchToProps & OwnProps
+export type PropsType = MapStateToProps & MapDispatchToProps & OwnProps
 
 
 const AdminContainer: React.FC<PropsType> = props => {

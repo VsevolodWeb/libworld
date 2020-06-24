@@ -1,0 +1,22 @@
+.menu
+	display: flex
+	justify-content: center
+	margin-bottom: 3rem
+	
+	&__item:not(:last-child)
+		margin-right: 2rem
+			
+	&__link
+		display: block
+		padding: .5rem 1rem
+		border:
+			width: 2px
+			style: dashed
+		color: inherit
+		text-decoration-line: none
+		border-radius: 2px
+		
+		&:global(.active), &:hover
+			color: var(--body-background-color)
+			background-color: var(--body-font-color)
+			border-color: var(--body-font-color)

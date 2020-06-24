@@ -12,13 +12,15 @@ const App = () => (
     <Provider store={store}>
         <BrowserRouter>
             <Header/>
-            <Switch>
-                <Route path="/admin">
-                    <Suspense fallback={<div>Загрузка</div>}>
-                        <Admin/>
-                    </Suspense>
-                </Route>
-            </Switch>
+            <div className="container">
+                <Switch>
+                    <Route path="/admin">
+                        <Suspense fallback={<div>Загрузка</div>}>
+                            <Admin/>
+                        </Suspense>
+                    </Route>
+                </Switch>
+            </div>
         </BrowserRouter>
     </Provider>
 );

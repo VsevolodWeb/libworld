@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom"
-import {CategoryType} from "../../../../store/categories-reducer";
 import {Field, Form, Formik} from "formik";
+import {CategoryType} from "../../../../store/categories-reducer";
 import {CategorySchema} from "../Categories";
 
 
@@ -10,7 +10,7 @@ type PropsType = {
     updateCategory: (category: CategoryType) => void
 }
 
-const Edit: React.FC<PropsType> = props => {
+const CategoriesEdit: React.FC<PropsType> = props => {
     const {id} = useParams()
     const [category, setCategory] = useState<CategoryType | null>(null)
     const getCategory = props.getCategory
@@ -51,4 +51,4 @@ const Edit: React.FC<PropsType> = props => {
     </>
 }
 
-export default Edit
+export default CategoriesEdit

@@ -1,33 +1,31 @@
 import React, {Suspense} from 'react'
 import Categories from "./Categories/Categories"
 import {Switch, Route, NavLink} from 'react-router-dom';
-import Edit from "./Categories/Edit/Edit";
-import {MapDispatchToProps, MapStateToProps} from "./AdminContainer";
 
+import {PropsType} from "./AdminContainer";
+import s from "./Admin.module.sass"
 
-type PropsType = MapStateToProps & MapDispatchToProps
 
 const Admin: React.FC<PropsType> = props => {
     return <div>
+        <ul className={s.menu}>
+            <li className={s.menu__item}>
+                <NavLink to={"/admin/categories"} className={s.menu__link}>Жанры</NavLink>
+            </li>
+            <li className={s.menu__item}>
+                <NavLink to={"/admin/books"} className={s.menu__link}>Книги</NavLink>
+            </li>
+        </ul>
         <Switch>
-            <Route exact path="/admin/categories">
+            <Route path="/admin/categories">
                 <Suspense fallback={<div>Загрузка</div>}>
                     <Categories getCategories={props.getCategoriesThunkCreator}
                                 removeCategory={props.removeCategoryThunkCreator}
                                 addingCategory={props.addingCategoryThunkCreator}
                                 categories={props.categories}
+                                getCategory={props.getCategoryThunkCreator}
+                                updateCategory={props.updateCategoryThunkCreator}
                     />
-                </Suspense>
-            </Route>
-            <Route path="/admin/categories/:id">
-                <Suspense fallback={<div>Загрузка</div>}>
-                    <Edit getCategory={props.getCategoryThunkCreator} updateCategory={props.updateCategoryThunkCreator}/>
-                </Suspense>
-            </Route>
-            <Route path="/">
-                <Suspense fallback={<div>Загрузка</div>}>
-                    <NavLink to={"/admin/categories"}>Жанры</NavLink>
-                    <NavLink to={"/admin/books"}>Книги</NavLink>
                 </Suspense>
             </Route>
         </Switch>
