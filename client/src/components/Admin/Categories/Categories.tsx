@@ -1,21 +1,20 @@
-import React, {useEffect, Suspense} from 'react';
-import {NavLink, Switch, Route} from "react-router-dom";
+import React, {useEffect} from 'react';
+import {NavLink} from "react-router-dom";
 import {Field, Form, Formik,} from 'formik';
 import * as Yup from 'yup';
+import cn from 'classnames';
 import s from "./Categories.module.sass"
 import {addingCategoryThunkCreatorType, CategoryType} from "../../../store/categories-reducer";
 
-import CategoriesEdit from "./CategoriesEdit/CategoriesEdit";
 
 export const CategorySchema = Yup.object().shape<CategoryType>({
     name: Yup.string()
-        .min(2, 'Too Short!')
-        .max(50, 'Too Long!')
-        .required('Required'),
+        .min(2, 'Название категории слишком короткое')
+        .max(50, 'Название категории слишком длинное')
+        .required('Обязательно для заполнения'),
     description: Yup.string()
-        .min(2, 'Too Short!')
-        .max(50, 'Too Long!')
-        .required('Required')
+        .min(2, 'Описание категории слишком короткое')
+        .required('Обязательно для заполнения')
 });
 
 
@@ -24,8 +23,6 @@ type PropsType = {
     removeCategory: (id: string) => void
     addingCategory: addingCategoryThunkCreatorType
     categories: CategoryType[]
-    getCategory: (id: string) => Promise<CategoryType>
-    updateCategory: (category: CategoryType) => void
 }
 
 const Categories: React.FC<PropsType> = props => {
@@ -40,62 +37,52 @@ const Categories: React.FC<PropsType> = props => {
     }
 
     return (
-        <Switch>
-            <Route exact path="/admin/categories">
-                <div>
-                    <h1 className="title title_lg">Категории</h1>
-                    <Formik
-                        initialValues={{name: '', description: ''}}
-                        onSubmit={(values, {setErrors, resetForm}) => {
-                            props.addingCategory(values, setErrors, resetForm)
-                        }}
-                        validationSchema={CategorySchema}
-                    >
-                        {({errors, touched}) => (
-                            <Form className={"form " + s.form}>
-                                <div>
-                                    <Field name="name" className="formElement"/>
-                                    {errors.name && touched.name ? (
-                                        <div>{errors.name}</div>
-                                    ) : null}
-                                </div>
-                                <div>
-                                    <Field name="description" as="textarea" className="formElement"/>
-                                    {errors.description && touched.description ? (
-                                        <div>{errors.description}</div>
-                                    ) : null}
-                                </div>
-                                <button>Добавить новую категорию!</button>
-                            </Form>
-                        )}
-                    </Formik>
-                    <table>
-                        <tbody>
-                        {props.categories.map((item, key) => (
-                            <tr key={key}>
-                                <td>
-                                    <NavLink to={`/admin/categories/${item.id}`}>{item.name}</NavLink>
-                                </td>
-                                <td>{item.description}</td>
-                                <td>
-                                    <button onClick={() => {
-                                        removeCategory(item.id!)
-                                    }}>Удалить
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
-            </Route>
-            <Route path="/admin/categories/:id">
-                <Suspense fallback={<div>Загрузка</div>}>
-                    <CategoriesEdit getCategory={props.getCategory}
-                                    updateCategory={props.updateCategory}/>
-                </Suspense>
-            </Route>
-        </Switch>
+        <div>
+            <h1 className="title title_lg">Категории</h1>
+            <Formik
+                initialValues={{name: '', description: ''}}
+                onSubmit={(values, {setErrors, resetForm}) => {
+                    props.addingCategory(values, setErrors, resetForm)
+                }}
+                validationSchema={CategorySchema}
+            >
+                {({errors, touched}) => (
+                    <Form className={cn("form", s.form)}>
+                        <div className="formElement">
+                            <Field name="name" className="formElement__element"/>
+                            {errors.name && touched.name ? (
+                                <div className="formElement__hint">{errors.name}</div>
+                            ) : null}
+                        </div>
+                        <div className="formElement">
+                            <Field name="description" as="textarea" className="formElement__element"/>
+                            {errors.description && touched.description ? (
+                                <div className="formElement__hint">{errors.description}</div>
+                            ) : null}
+                        </div>
+                        <button className="button button_light">Добавить новую категорию!</button>
+                    </Form>
+                )}
+            </Formik>
+            <table>
+                <tbody>
+                {props.categories.map((item, key) => (
+                    <tr key={key}>
+                        <td>
+                            <NavLink to={`/admin/categories/${item.id}`}>{item.name}</NavLink>
+                        </td>
+                        <td>{item.description}</td>
+                        <td>
+                            <button onClick={() => {
+                                removeCategory(item.id!)
+                            }}>Удалить
+                            </button>
+                        </td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+        </div>
     );
 };
 

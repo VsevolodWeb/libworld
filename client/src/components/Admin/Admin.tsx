@@ -4,6 +4,7 @@ import {Switch, Route, NavLink} from 'react-router-dom';
 
 import {PropsType} from "./AdminContainer";
 import s from "./Admin.module.sass"
+import CategoriesEdit from "./Categories/CategoriesEdit/CategoriesEdit";
 
 
 const Admin: React.FC<PropsType> = props => {
@@ -17,15 +18,19 @@ const Admin: React.FC<PropsType> = props => {
             </li>
         </ul>
         <Switch>
-            <Route path="/admin/categories">
+            <Route exact path="/admin/categories">
                 <Suspense fallback={<div>Загрузка</div>}>
                     <Categories getCategories={props.getCategoriesThunkCreator}
                                 removeCategory={props.removeCategoryThunkCreator}
                                 addingCategory={props.addingCategoryThunkCreator}
                                 categories={props.categories}
-                                getCategory={props.getCategoryThunkCreator}
-                                updateCategory={props.updateCategoryThunkCreator}
                     />
+                </Suspense>
+            </Route>
+            <Route path="/admin/categories/:id">
+                <Suspense fallback={<div>Загрузка</div>}>
+                    <CategoriesEdit getCategory={props.getCategoryThunkCreator}
+                                    updateCategory={props.updateCategoryThunkCreator}/>
                 </Suspense>
             </Route>
         </Switch>

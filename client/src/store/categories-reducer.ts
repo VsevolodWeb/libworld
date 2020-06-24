@@ -22,21 +22,23 @@ const initialState: InitialStateType = {
 const categoriesReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
     switch (action.type) {
         case "categories/ADD_CATEGORY": {
-            return {...state, list: [...state.list, action.category]}
+            const stateCopy = Object.assign({}, state);
+            const candidateId = stateCopy.list.findIndex(item => item.id === action.category.id)
+
+            return candidateId ? {...stateCopy, list: [...stateCopy.list, action.category]} : stateCopy
         }
         case "categories/GET_CATEGORIES": {
-            return {...state, list: [...action.categories]}
+            return {...state, list: action.categories}
         }
         case "categories/REMOVE_CATEGORY": {
             return {...state, list: state.list.filter(item => item.id !== action.id)}
         }
         case "categories/UPDATE_CATEGORY": {
-            const newList = [...state.list];
-            const candidateId = newList.findIndex((el => el.id === action.category.id))
+            const stateCopy = Object.assign({}, state);
+            const candidateId = stateCopy.list.findIndex((el => el.id === action.category.id))
+            stateCopy.list[candidateId] = action.category
 
-            newList[candidateId] = action.category
-
-            return {...state, list: [...newList]}
+            return stateCopy
         }
         default: {
             return state;
@@ -73,6 +75,7 @@ export const addingCategoryThunkCreator: addingCategoryThunkCreatorType = (categ
 export const getCategoriesThunkCreator = () => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
         const response = await categoriesAPI.getCategories()
+
         dispatch(actions.getCategories(response.data.getCategories))
     } catch (e) {
         console.log(e)
@@ -104,7 +107,6 @@ export const removeCategoryThunkCreator = (id: string) => async (dispatch: Dispa
 export const updateCategoryThunkCreator = (category: CategoryType) => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
         const response = await categoriesAPI.updateCategory(category)
-        console.log(category)
 
         dispatch(actions.updateCategory(response.data.updateCategory))
     } catch (e) {
