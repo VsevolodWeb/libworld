@@ -5,15 +5,17 @@ module.exports = buildSchema(`
 		id: String!
 		name: String!
 		description: String!
+		subcategories: [CategoryType!]
 	}
 	input CategoryInput {
 		id: String
 		name: String!
 		description: String!
+		parentId: String
 	}
 
 	type Mutation {
-		addCategory(category: CategoryInput!): CategoryType!
+		addCategory(category: CategoryInput): CategoryType!
 		removeCategory(id: String!): CategoryType
 		updateCategory(category: CategoryInput!): CategoryType!
 	}

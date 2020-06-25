@@ -1,16 +1,18 @@
 import api, {ApiType} from "./api"
-import {CategoryType} from "../store/categories-reducer"
+import {CategoryInputType, CategoryOutputType, CategoryType} from "../store/categories-reducer"
 
 export const categoriesAPI = {
-    addCategory(category: CategoryType) {
+    addCategory(category: CategoryInputType) {
         const query = `
             mutation {
-                addCategory(category: {name: "${category.name}", description: "${category.description}"}) {
-                    name description
+                addCategory(category: {name: "${category.name}",
+                                       description: "${category.description}",
+                                       parentId: "${category.parentId}"}) {
+                    id name description
                 }
             }
         `
-        return api<ApiType<"addCategory", CategoryType>>(query)
+        return api<ApiType<"addCategory", CategoryOutputType>>(query)
     },
     getCategories() {
         const query = `

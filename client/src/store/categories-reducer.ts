@@ -3,14 +3,22 @@ import {InferActionsTypes} from "./store";
 import {categoriesAPI} from "../api/categories-api";
 import {FormikErrors, FormikState} from "formik";
 
+
 export type CategoryType = {
     id?: string
     name: string
     description: string
 }
+export type CategoryInputType = CategoryType & {
+    parentId: string | null
+}
+
+export type CategoryOutputType = CategoryType & {
+    subcategories: CategoryType[]
+}
 
 type InitialStateType = {
-    list: CategoryType[]
+    list: CategoryOutputType[]
 }
 type ActionsTypes = InferActionsTypes<typeof actions>
 
@@ -28,17 +36,17 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
             return candidateId ? {...stateCopy, list: [...stateCopy.list, action.category]} : stateCopy
         }
         case "categories/GET_CATEGORIES": {
-            return {...state, list: action.categories}
+            //return {...state, list: action.categories}
         }
         case "categories/REMOVE_CATEGORY": {
-            return {...state, list: state.list.filter(item => item.id !== action.id)}
+            //return {...state, list: state.list.filter(item => item.id !== action.id)}
         }
         case "categories/UPDATE_CATEGORY": {
-            const stateCopy = Object.assign({}, state);
-            const candidateId = stateCopy.list.findIndex((el => el.id === action.category.id))
-            stateCopy.list[candidateId] = action.category
+            // const stateCopy = Object.assign({}, state);
+            // const candidateId = stateCopy.list.findIndex((el => el.id === action.category.id))
+            // stateCopy.list[candidateId] = action.category
 
-            return stateCopy
+            return state
         }
         default: {
             return state;
@@ -47,22 +55,20 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
 };
 
 export const actions = {
-    addCategory: (category: CategoryType) => ({type: 'categories/ADD_CATEGORY', category} as const),
+    addCategory: (category: CategoryOutputType) => ({type: 'categories/ADD_CATEGORY', category} as const),
     getCategories: (categories: CategoryType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const),
     removeCategory: (id: string) => ({type: 'categories/REMOVE_CATEGORY', id} as const),
     updateCategory: (category: CategoryType) => ({type: 'categories/UPDATE_CATEGORY', category} as const)
 }
 
-export type addingCategoryThunkCreatorType = (category: CategoryType, setErrors: (errors: FormikErrors<CategoryType>) => void, resetForm: (nextState?: Partial<FormikState<CategoryType>>) => void) => void
+export type addingCategoryThunkCreatorType = (category: CategoryInputType, setErrors: (errors: FormikErrors<CategoryInputType>) => void, resetForm: (nextState?: Partial<FormikState<CategoryInputType>>) => void) => void
 export const addingCategoryThunkCreator: addingCategoryThunkCreatorType = (category, setErrors, resetForm) =>
     async (dispatch: Dispatch<ActionsTypes>) => {
         try {
             const newCategory = await categoriesAPI.addCategory(category)
 
             if (!newCategory.errors) {
-                const categoryId = await categoriesAPI.getCategoryId(newCategory.data.addCategory.name)
-
-                dispatch(actions.addCategory({...newCategory.data.addCategory, id: categoryId.data.getCategoryId}))
+                dispatch(actions.addCategory({...newCategory.data.addCategory}))
                 resetForm()
             } else {
                 setErrors({description: newCategory.errors[0].message})
@@ -86,7 +92,7 @@ export const getCategoryThunkCreator = (id: string) => async (dispatch: Dispatch
     try {
         const response = await categoriesAPI.getCategory(id)
 
-        dispatch(actions.addCategory(response.data.getCategory))
+        //dispatch(actions.addCategory(response.data.getCategory))
 
         return response.data.getCategory
     } catch (e) {

@@ -2,7 +2,7 @@ import React from "react"
 import Admin from "./Admin";
 import {
     addingCategoryThunkCreator,
-    addingCategoryThunkCreatorType,
+    addingCategoryThunkCreatorType, CategoryOutputType,
     CategoryType,
     getCategoriesThunkCreator, getCategoryThunkCreator, removeCategoryThunkCreator, updateCategoryThunkCreator
 } from "../../store/categories-reducer";
@@ -10,7 +10,7 @@ import {AppStateType} from "../../store/store";
 import {connect} from "react-redux";
 
 type MapStateToProps = {
-    categories: CategoryType[]
+    categories: CategoryOutputType[]
 }
 type MapDispatchToProps = {
     addingCategoryThunkCreator: addingCategoryThunkCreatorType
