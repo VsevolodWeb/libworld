@@ -19,7 +19,7 @@ export const CategorySchema = Yup.object().shape<CategoryInputType>({
     description: Yup.string()
         .min(2, 'Описание категории слишком короткое')
         .required('Обязательно для заполнения'),
-    parentId: Yup.string().defined()
+    parentId: Yup.string().required('Обязательно для заполнения')
 });
 
 
@@ -45,22 +45,25 @@ const Categories: React.FC<PropsType> = props => {
         <div>
             <h1 className="title title_lg">Категории</h1>
             <Formik
-                initialValues={{name: '', description: '', parentId: '' as string | null}}
+                initialValues={
+                    {name: '', description: '', parentId: ''}
+                }
                 onSubmit={(values, {setErrors, resetForm}) => {
                     props.addingCategory(values, setErrors, resetForm)
                 }}
                 validationSchema={CategorySchema}
             >
-                {({errors, touched}) => (
+                {({values, errors, touched, handleChange, handleBlur}) => (
                     <Form className={cn("form", s.form)}>
                         <div className="formElement">
-                            <Field name="parentId" as="select" className="formElement__element">
-                                <option value="red">Red</option>
-                                <option value="green">Green</option>
-                                <option value="blue">Blue</option>
-                            </Field>
-                            {errors.description && touched.description ? (
-                                <div className="formElement__hint">{errors.description}</div>
+                            <select name="parentId" className="formElement__element" onChange={handleChange}
+                                   onBlur={handleBlur} value={values.parentId}>
+                                {/*{props.categories.map(item => {*/}
+                                {/*    return <option key={item.id} value={item.id}>{item.name}</option>*/}
+                                {/*})}*/}
+                            </select>
+                            {errors.parentId && touched.parentId ? (
+                                <div className="formElement__hint">{errors.parentId}</div>
                             ) : null}
                         </div>
                         <div className="formElement">
@@ -96,17 +99,36 @@ const Categories: React.FC<PropsType> = props => {
                     </tr>
                     </thead>
                     <tbody>
-                    {props.categories.map((item, key) => (
-                        <tr key={key}>
-                            <td>
-                                <NavLink to={`/admin/categories/${item.id}`} className="link">{item.name}</NavLink>
-                            </td>
-                            <td>{item.description}</td>
-                            <td>
-                                <button className="button button_sm button_error" onClick={() => removeCategory(item.id!)}>Удалить
-                                </button>
-                            </td>
-                        </tr>
+                    {props.categories.map((item) => (
+                        <React.Fragment key={item.id}>
+                            <tr>
+                                <td>
+                                    <NavLink to={`/admin/categories/${item.id}`} className="link">{item.name}</NavLink>
+                                </td>
+                                <td>{item.description}</td>
+                                <td>
+                                    <button className="button button_sm button_error"
+                                            onClick={() => removeCategory(item.id!)}>Удалить
+                                    </button>
+                                </td>
+                            </tr>
+                            {item.subcategories &&
+                            item.subcategories.map(item => {
+                                return <tr key={item.id}>
+                                    <td>
+                                        --- <NavLink to={`/admin/categories/${item.id}`}
+                                                     className="link">{item.name}</NavLink>
+                                    </td>
+                                    <td>{item.description}</td>
+                                    <td>
+                                        <button className="button button_sm button_error"
+                                                onClick={() => removeCategory(item.id!)}>Удалить
+                                        </button>
+                                    </td>
+                                </tr>
+                            })
+                            }
+                        </React.Fragment>
                     ))}
                     </tbody>
                 </table>

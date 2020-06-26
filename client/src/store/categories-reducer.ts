@@ -10,11 +10,11 @@ export type CategoryType = {
     description: string
 }
 export type CategoryInputType = CategoryType & {
-    parentId: string | null
+    parentId: string
 }
 
 export type CategoryOutputType = CategoryType & {
-    subcategories: CategoryType[]
+    subcategories?: CategoryType[]
 }
 
 type InitialStateType = {
@@ -36,7 +36,7 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
             return candidateId ? {...stateCopy, list: [...stateCopy.list, action.category]} : stateCopy
         }
         case "categories/GET_CATEGORIES": {
-            //return {...state, list: action.categories}
+            return {...state, list: action.categories}
         }
         case "categories/REMOVE_CATEGORY": {
             //return {...state, list: state.list.filter(item => item.id !== action.id)}
@@ -55,8 +55,8 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
 };
 
 export const actions = {
-    addCategory: (category: CategoryOutputType) => ({type: 'categories/ADD_CATEGORY', category} as const),
-    getCategories: (categories: CategoryType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const),
+    addCategory: (category: CategoryType) => ({type: 'categories/ADD_CATEGORY', category} as const),
+    getCategories: (categories: CategoryOutputType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const),
     removeCategory: (id: string) => ({type: 'categories/REMOVE_CATEGORY', id} as const),
     updateCategory: (category: CategoryType) => ({type: 'categories/UPDATE_CATEGORY', category} as const)
 }
@@ -66,6 +66,7 @@ export const addingCategoryThunkCreator: addingCategoryThunkCreatorType = (categ
     async (dispatch: Dispatch<ActionsTypes>) => {
         try {
             const newCategory = await categoriesAPI.addCategory(category)
+            console.log(category)
 
             if (!newCategory.errors) {
                 dispatch(actions.addCategory({...newCategory.data.addCategory}))
