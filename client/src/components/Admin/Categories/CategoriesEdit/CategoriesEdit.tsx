@@ -8,9 +8,10 @@ import s from "./CategoriesEdit.module.sass"
 
 
 type PropsType = {
-    getCategory: (id: string) => Promise<CategoryType>
+    getCategory: (id: string, parentId: string) => Promise<CategoryType>
     updateCategory: (category: CategoryType) => void
     categories: CategoryOutputType[]
+    parentId: string
 }
 
 const CategoriesEdit: React.FC<PropsType> = props => {
@@ -20,12 +21,10 @@ const CategoriesEdit: React.FC<PropsType> = props => {
     const getCategory = props.getCategory
 
     useEffect(() => {
-        getCategory(id).then(response => {
+        getCategory(id, props.parentId).then(response => {
             setCategory(response)
         })
-    }, [getCategory, id])
-
-    console.log(isRedirect)
+    }, [getCategory, id, props.parentId])
 
     return isRedirect ? <Redirect to={"/admin/categories"}/> : <>
         {category && (

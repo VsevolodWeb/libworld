@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react'
-import {NavLink} from "react-router-dom"
+import React, {useEffect, Suspense} from 'react'
+import {NavLink, Route} from "react-router-dom"
 import {Field, Form, Formik,} from 'formik'
 import * as Yup from 'yup'
 import cn from 'classnames'
@@ -7,8 +7,9 @@ import s from "./Categories.module.sass"
 import {
     addingCategoryThunkCreatorType,
     CategoryInputType,
-    CategoryOutputType
+    CategoryOutputType, CategoryType
 } from "../../../store/categories-reducer"
+import CategoriesEdit from './CategoriesEdit/CategoriesEdit'
 
 
 export const CategorySchema = Yup.object().shape<CategoryInputType>({
@@ -25,7 +26,9 @@ export const CategorySchema = Yup.object().shape<CategoryInputType>({
 
 type PropsType = {
     getCategories: () => void
+    getCategory: (id: string, parentId: string) => Promise<CategoryType>
     removeCategory: (id: string, parentId: string) => void
+    updateCategory: (category: CategoryType) => void
     addingCategory: addingCategoryThunkCreatorType
     categories: CategoryOutputType[]
 }
@@ -104,7 +107,17 @@ const Categories: React.FC<PropsType> = props => {
                         <React.Fragment key={parentItem.id}>
                             <tr>
                                 <td>
-                                    <NavLink to={`/admin/categories/${parentItem.id}`} className="link">{parentItem.name}</NavLink>
+                                    <NavLink to={`/admin/categories/${parentItem.id}`}
+                                             className="link">{parentItem.name}
+                                    </NavLink>
+                                    <Route path={`/admin/categories/${parentItem.id}`}>
+                                        <Suspense fallback={<div>Загрузка</div>}>
+                                            <CategoriesEdit getCategory={props.getCategory}
+                                                            updateCategory={props.updateCategory}
+                                                            categories={props.categories}
+                                                            parentId={""}/>
+                                        </Suspense>
+                                    </Route>
                                 </td>
                                 <td>{parentItem.description}</td>
                                 <td>
@@ -119,6 +132,14 @@ const Categories: React.FC<PropsType> = props => {
                                     <td>
                                         --- <NavLink to={`/admin/categories/${item.id}`}
                                                      className="link">{item.name}</NavLink>
+                                        <Route path={`/admin/categories/${parentItem.id}`}>
+                                            <Suspense fallback={<div>Загрузка</div>}>
+                                                <CategoriesEdit getCategory={props.getCategory}
+                                                                updateCategory={props.updateCategory}
+                                                                categories={props.categories}
+                                                                parentId={parentItem.id as string}/>
+                                            </Suspense>
+                                        </Route>
                                     </td>
                                     <td>{item.description}</td>
                                     <td>

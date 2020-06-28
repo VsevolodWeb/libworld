@@ -27,23 +27,15 @@ export const categoriesAPI = {
         `
         return api<ApiType<"getCategories", CategoryOutputType[]>>(query)
     },
-    getCategory(id: string) {
+    getCategory(id: string, parentId: string) {
         const query = `
             query {
-              getCategory(id: "${id}") {
+              getCategory(id: "${id}", parentId: "${parentId}) {
                 id name description
               }
             }
         `
         return api<ApiType<"getCategory", CategoryType>>(query)
-    },
-    getCategoryId(name: string) {
-        const query = `
-            query {
-              getCategoryId(name: "${name}")
-            }
-        `
-        return api<ApiType<"getCategoryId", string>>(query)
     },
     removeCategory(id: string, parentId: string) {
         const query = `

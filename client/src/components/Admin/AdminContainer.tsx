@@ -16,7 +16,7 @@ type MapDispatchToProps = {
     addingCategoryThunkCreator: addingCategoryThunkCreatorType
     getCategoriesThunkCreator: () => void
     removeCategoryThunkCreator: (id: string, parentId: string) => void
-    getCategoryThunkCreator: (id: string) => Promise<any>
+    getCategoryThunkCreator: (id: string, parentId: string) => Promise<any>
     updateCategoryThunkCreator: (category: CategoryType) => void
 }
 type OwnProps = {}

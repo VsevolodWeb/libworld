@@ -105,9 +105,9 @@ export const getCategoriesThunkCreator = () => async (dispatch: Dispatch<Actions
     }
 }
 
-export const getCategoryThunkCreator = (id: string) => async () => {
+export const getCategoryThunkCreator = (id: string, parentId: string) => async () => {
     try {
-        const response = await categoriesAPI.getCategory(id)
+        const response = await categoriesAPI.getCategory(id, parentId)
 
         return response.data.getCategory
     } catch (e) {

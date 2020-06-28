@@ -19,9 +19,7 @@ module.exports = {
 			} else {
 				const newCategory = new Category({...CategoryFields, subcategories: []})
 
-
 				await newCategory.save();
-				console.log({...CategoryFields})
 
 				return CategoryFields
 			}
@@ -33,18 +31,6 @@ module.exports = {
 	async getCategories() {
 		try {
 			return await Category.find()
-		} catch (e) {
-			throw new Error(e)
-		}
-	},
-
-	async getCategoryId({name}) {
-		try {
-			return await Category.findOne({name}).then(response => {
-				if (response) {
-					return response.id
-				}
-			})
 		} catch (e) {
 			throw new Error(e)
 		}
@@ -66,9 +52,17 @@ module.exports = {
 		}
 	},
 
-	async getCategory({id}) {
+	async getCategory({id, parentId}) {
 		try {
-			return await Category.findOne({id})
+			let candidate;
+
+			if(parentId) {
+				candidate = await Category.findOne({id: parentId, subcategories: {id}})
+			} else {
+				candidate = await Category.findOne({id})
+			}
+			console.log(candidate)
+			return candidate
 		} catch (e) {
 			throw new Error(e)
 		}
@@ -76,7 +70,16 @@ module.exports = {
 
 	async updateCategory({category}) {
 		try {
-			return await Category.findOneAndUpdate({id: category.id}, {...category}, {new: true})
+			let updatedCategory;
+
+			if (category.parentId) {
+				updatedCategory = await Category
+					.findOneAndUpdate({id: category.parentId}, {$set: {"subcategories": {id: category.id}}})
+			} else {
+				updatedCategory = await Category
+					.findOneAndUpdate({id: category.id}, {...category}, {new: true})
+			}
+			return updatedCategory
 		} catch (e) {
 			throw new Error(e)
 		}
