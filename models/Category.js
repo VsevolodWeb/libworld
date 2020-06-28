@@ -6,9 +6,9 @@ const Category = {
 	description: String
 }
 
-const schema = new Schema({
+const CategorySchema = new Schema({
 	...Category,
 	subcategories: [Category]
 });
 
-module.exports = model('Category', schema);
+module.exports = model('Category', CategorySchema)

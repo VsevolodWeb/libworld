@@ -1,11 +1,16 @@
 const {buildSchema} = require("graphql")
 
 module.exports = buildSchema(`
+	type SubCategoryType {
+		id: String!
+		name: String!
+		description: String!
+	}
 	type CategoryType {
 		id: String!
 		name: String!
 		description: String!
-		subcategories: [CategoryType!]
+		subcategories: [SubCategoryType!]!
 	}
 	input CategoryInput {
 		id: String
@@ -16,7 +21,7 @@ module.exports = buildSchema(`
 
 	type Mutation {
 		addCategory(category: CategoryInput): CategoryType!
-		removeCategory(id: String!): CategoryType
+		removeCategory(id: String!, parentId: String!): String!
 		updateCategory(category: CategoryInput!): CategoryType!
 	}
 	

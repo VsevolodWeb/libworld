@@ -24,7 +24,7 @@ const PORT = config.get('port') || 5000;
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 			useCreateIndex: true,
-			useFindAndModify: true
+			useFindAndModify: false
 		});
 
 		app.listen(PORT, (error) => {

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react"
 import {useParams, Redirect} from "react-router-dom"
 import {Field, Form, Formik} from "formik"
 import cn from "classnames"
-import {CategoryType} from "../../../../store/categories-reducer"
+import {CategoryOutputType, CategoryType} from "../../../../store/categories-reducer"
 import {CategorySchema} from "../Categories"
 import s from "./CategoriesEdit.module.sass"
 
@@ -10,6 +10,7 @@ import s from "./CategoriesEdit.module.sass"
 type PropsType = {
     getCategory: (id: string) => Promise<CategoryType>
     updateCategory: (category: CategoryType) => void
+    categories: CategoryOutputType[]
 }
 
 const CategoriesEdit: React.FC<PropsType> = props => {
@@ -24,17 +25,35 @@ const CategoriesEdit: React.FC<PropsType> = props => {
         })
     }, [getCategory, id])
 
+    console.log(isRedirect)
+
     return isRedirect ? <Redirect to={"/admin/categories"}/> : <>
         {category && (
             <Formik
-                initialValues={{name: category?.name, description: category?.description}}
+                initialValues={{
+                    name: category?.name,
+                    description: category?.description,
+                    parentId: null as null | string
+                }}
                 validationSchema={CategorySchema}
                 onSubmit={(values) => {
                     props.updateCategory({...values, id})
                     setIsRedirect(true)
                 }}>
-                {({errors, touched}) => (
+                {({errors, touched, handleChange, handleBlur}) => (
                     <Form className={cn("form", s.form)}>
+                        <div className="formElement">
+                            <select name="parentId" className="formElement__element" onChange={handleChange}
+                                    onBlur={handleBlur}>
+                                <option>Без категории</option>
+                                {props.categories.map(item => {
+                                    return <option key={item.id} value={item.id}>{item.name}</option>
+                                })}
+                            </select>
+                            {errors.parentId && touched.parentId ? (
+                                <div className="formElement__hint">{errors.parentId}</div>
+                            ) : null}
+                        </div>
                         <div className="formElement">
                             <Field name="name" className="formElement__element" placeholder="Название"/>
                             {errors.name && touched.name ? (

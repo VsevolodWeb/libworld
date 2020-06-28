@@ -10,7 +10,7 @@ export type CategoryType = {
     description: string
 }
 export type CategoryInputType = CategoryType & {
-    parentId: string
+    parentId: null | string
 }
 
 export type CategoryOutputType = CategoryType & {
@@ -30,16 +30,33 @@ const initialState: InitialStateType = {
 const categoriesReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
     switch (action.type) {
         case "categories/ADD_CATEGORY": {
-            const stateCopy = Object.assign({}, state);
-            const candidateId = stateCopy.list.findIndex(item => item.id === action.category.id)
+            const listCopy = state.list.map(item => Object.assign({}, item));
+            const candidateIdx = listCopy.findIndex(item => item.id === action.category.parentId)
 
-            return candidateId ? {...stateCopy, list: [...stateCopy.list, action.category]} : stateCopy
+            if (candidateIdx === -1) {
+                listCopy.push(action.category)
+            } else {
+                listCopy[candidateIdx].subcategories?.push(action.category)
+            }
+
+            return {...state, list: listCopy}
         }
         case "categories/GET_CATEGORIES": {
             return {...state, list: action.categories}
         }
         case "categories/REMOVE_CATEGORY": {
-            //return {...state, list: state.list.filter(item => item.id !== action.id)}
+            const listCopy = state.list.map(item => Object.assign({}, item));
+
+            if (action.parentId) {
+                const categoryIdx = listCopy.findIndex(item => item.id === action.parentId)
+
+                listCopy[categoryIdx].subcategories = listCopy[categoryIdx].subcategories!
+                    .filter(item => item.id !== action.id)
+
+                return {...state, list: listCopy}
+            } else {
+                return {...state, list: listCopy.filter(item => item.id !== action.id)}
+            }
         }
         case "categories/UPDATE_CATEGORY": {
             // const stateCopy = Object.assign({}, state);
@@ -55,9 +72,9 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
 };
 
 export const actions = {
-    addCategory: (category: CategoryType) => ({type: 'categories/ADD_CATEGORY', category} as const),
+    addCategory: (category: CategoryInputType) => ({type: 'categories/ADD_CATEGORY', category} as const),
     getCategories: (categories: CategoryOutputType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const),
-    removeCategory: (id: string) => ({type: 'categories/REMOVE_CATEGORY', id} as const),
+    removeCategory: (id: string, parentId: string) => ({type: 'categories/REMOVE_CATEGORY', id, parentId} as const),
     updateCategory: (category: CategoryType) => ({type: 'categories/UPDATE_CATEGORY', category} as const)
 }
 
@@ -66,10 +83,9 @@ export const addingCategoryThunkCreator: addingCategoryThunkCreatorType = (categ
     async (dispatch: Dispatch<ActionsTypes>) => {
         try {
             const newCategory = await categoriesAPI.addCategory(category)
-            console.log(category)
 
             if (!newCategory.errors) {
-                dispatch(actions.addCategory({...newCategory.data.addCategory}))
+                dispatch(actions.addCategory({...newCategory.data.addCategory, parentId: category.parentId}))
                 resetForm()
             } else {
                 setErrors({description: newCategory.errors[0].message})
@@ -89,11 +105,9 @@ export const getCategoriesThunkCreator = () => async (dispatch: Dispatch<Actions
     }
 }
 
-export const getCategoryThunkCreator = (id: string) => async (dispatch: Dispatch<ActionsTypes>) => {
+export const getCategoryThunkCreator = (id: string) => async () => {
     try {
         const response = await categoriesAPI.getCategory(id)
-
-        //dispatch(actions.addCategory(response.data.getCategory))
 
         return response.data.getCategory
     } catch (e) {
@@ -101,11 +115,11 @@ export const getCategoryThunkCreator = (id: string) => async (dispatch: Dispatch
     }
 }
 
-export const removeCategoryThunkCreator = (id: string) => async (dispatch: Dispatch<ActionsTypes>) => {
+export const removeCategoryThunkCreator = (id: string, parentId: string) => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
-        const response = await categoriesAPI.removeCategory(id)
+        const response = await categoriesAPI.removeCategory(id, parentId)
 
-        dispatch(actions.removeCategory(response.data.removeCategory.id!))
+        dispatch(actions.removeCategory(response.data.removeCategory, parentId))
     } catch (e) {
         console.log(e)
     }

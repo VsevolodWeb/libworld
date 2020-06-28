@@ -4,20 +4,27 @@ const Category = require('../models/Category')
 module.exports = {
 	async addCategory({category: {name, description, parentId}}) {
 		try {
-			const newCategory = new Category({
+			const CategoryFields = {
 				id: shortId.generate(), name, description
-			})
-
-			if (parentId) {
-				const parentCategory = await Category.findOne({id: parentId})
-				parentCategory.subcategories = [...parentCategory.subcategories, newCategory]
-
-				parentCategory.save()
-			} else {
-				await newCategory.save();
 			}
 
-			return newCategory
+			if (parentId !== "null") {
+
+				const parentCategory = await Category.findOne({id: parentId})
+				parentCategory.subcategories = [...parentCategory.subcategories, CategoryFields]
+
+				await parentCategory.save()
+
+				return CategoryFields
+			} else {
+				const newCategory = new Category({...CategoryFields, subcategories: []})
+
+
+				await newCategory.save();
+				console.log({...CategoryFields})
+
+				return CategoryFields
+			}
 
 		} catch (e) {
 			throw new Error(e)
@@ -43,9 +50,17 @@ module.exports = {
 		}
 	},
 
-	async removeCategory({id}) {
+	async removeCategory({id, parentId}) {
 		try {
-			return await Category.findOneAndDelete({id})
+			let removedCategory
+
+			if (parentId) {
+				removedCategory = await Category.findOneAndUpdate({id: parentId}, {$pull: {"subcategories": {id}}})
+			} else {
+				removedCategory = await Category.findOneAndDelete({id})
+			}
+
+			return id
 		} catch (e) {
 			throw new Error(e)
 		}

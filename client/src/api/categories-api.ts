@@ -45,15 +45,13 @@ export const categoriesAPI = {
         `
         return api<ApiType<"getCategoryId", string>>(query)
     },
-    removeCategory(id: String) {
+    removeCategory(id: string, parentId: string) {
         const query = `
             mutation {
-                removeCategory(id: "${id}") {
-                    id
-                }
+                removeCategory(id: "${id}", parentId: "${parentId}")
             }
         `
-        return api<ApiType<"removeCategory", CategoryType>>(query)
+        return api<ApiType<"removeCategory", string>>(query)
     },
     updateCategory(category: CategoryType) {
         const query = `

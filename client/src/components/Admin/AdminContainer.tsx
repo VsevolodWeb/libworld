@@ -15,7 +15,7 @@ type MapStateToProps = {
 type MapDispatchToProps = {
     addingCategoryThunkCreator: addingCategoryThunkCreatorType
     getCategoriesThunkCreator: () => void
-    removeCategoryThunkCreator: (id: string) => void
+    removeCategoryThunkCreator: (id: string, parentId: string) => void
     getCategoryThunkCreator: (id: string) => Promise<any>
     updateCategoryThunkCreator: (category: CategoryType) => void
 }
