@@ -15,12 +15,12 @@ module.exports = buildSchema(`
 
 	type Mutation {
 		addCategory(category: CategoryInput): CategoryType!
-		# removeCategory(id: String!, parentId: String!): String!
+		removeCategory(id: String!): String!
 		# updateCategory(category: CategoryInput!): CategoryType!
 	}
 	
-	# type Query {
-		# getCategories: [CategoryType!]
-		# getCategory(id: String!, parentId: String!): CategoryType!
-	# }
+	type Query {
+		getCategories: [CategoryType!]!
+		getCategory(id: String!, parentId: String!): CategoryType!
+	}
 `)
