@@ -21,6 +21,6 @@ module.exports = buildSchema(`
 	
 	type Query {
 		getCategories: [CategoryType!]!
-		getCategory(id: String!, parentId: String!): CategoryType!
+		getCategory(id: String!): CategoryType!
 	}
 `)

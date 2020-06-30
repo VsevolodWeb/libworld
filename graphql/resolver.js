@@ -1,4 +1,3 @@
-const {GraphQLError} = require('graphql')
 const shortId = require('shortid')
 const Category = require('../models/Category')
 
@@ -30,7 +29,7 @@ module.exports = {
 	},
 	async getCategories() {
 		try {
-			return await Category.find().where('subcategories').ne([])
+			return await Category.find().where("subcategories").ne([])
 		} catch (e) {
 			throw new Error(e)
 		}
@@ -38,10 +37,12 @@ module.exports = {
 
 	async removeCategory({id}) {
 		try {
-			const removedCategory = await Category
-				.findOneAndUpdate({}, {$pull: {"subcategories": {id}}})
+			const removedCategory = await Category.findOneAndDelete({id})
 
-			if(!removedCategory) return new Error("Категория не найдена")
+			if (!removedCategory) {
+				await Category
+					.findOneAndUpdate({"subcategories.id": id}, {$pull: {"subcategories": {id}}})
+			}
 
 			return id
 		} catch (e) {
@@ -49,21 +50,18 @@ module.exports = {
 		}
 	},
 
-	// async getCategory({id, parentId}) {
-	// 	try {
-	// 		let candidate;
-	//
-	// 		if(parentId) {
-	// 			candidate = await Category.findOne({id: parentId, subcategories: {id}})
-	// 		} else {
-	// 			candidate = await Category.findOne({id})
-	// 		}
-	// 		console.log(candidate)
-	// 		return candidate
-	// 	} catch (e) {
-	// 		throw new Error(e)
-	// 	}
-	// },
+	async getCategory({id}) {
+		try {
+			return await Category.findOne({$or: [{id}, {"subcategories.id": id}]})
+				.then(category => {
+					if (!category) return new Error("Категория не найдена")
+
+					return category.id === id ? category : category.subcategories.find(item => item.id === id)
+				})
+		} catch (e) {
+			throw new Error(e)
+		}
+	},
 
 	// async updateCategory({category}) {
 	// 	try {
