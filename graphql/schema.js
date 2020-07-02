@@ -8,15 +8,16 @@ module.exports = buildSchema(`
 		subcategories: [CategoryType]
 	}
 	input CategoryInput {
+		id: String
 		name: String!
 		description: String!
-		subcategoryId: String
+		parentId: String
 	}
 
 	type Mutation {
 		addCategory(category: CategoryInput): CategoryType!
 		removeCategory(id: String!): String!
-		# updateCategory(category: CategoryInput!): CategoryType!
+		updateCategory(category: CategoryInput!): CategoryType!
 	}
 	
 	type Query {

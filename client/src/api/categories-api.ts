@@ -6,8 +6,11 @@ export const categoriesAPI = {
         const query = `
             mutation {
                 addCategory(category: {name: "${category.name}",
-                                       description: "${category.description}",
-                                       parentId: "${category.parentId}"}) {
+                                       description: "${category.description}"
+                                       ${category.parentId ?
+                                            `, parentId: "${category.parentId}"` : ''}
+                                       }
+                            ) {
                     id name description
                 }
             }
@@ -27,20 +30,20 @@ export const categoriesAPI = {
         `
         return api<ApiType<"getCategories", CategoryOutputType[]>>(query)
     },
-    getCategory(id: string, parentId: string) {
+    getCategory(id: string) {
         const query = `
             query {
-              getCategory(id: "${id}", parentId: "${parentId}) {
+              getCategory(id: "${id}") {
                 id name description
               }
             }
         `
         return api<ApiType<"getCategory", CategoryType>>(query)
     },
-    removeCategory(id: string, parentId: string) {
+    removeCategory(id: string) {
         const query = `
             mutation {
-                removeCategory(id: "${id}", parentId: "${parentId}")
+                removeCategory(id: "${id}")
             }
         `
         return api<ApiType<"removeCategory", string>>(query)

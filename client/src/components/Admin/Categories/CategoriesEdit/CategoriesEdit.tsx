@@ -8,10 +8,9 @@ import s from "./CategoriesEdit.module.sass"
 
 
 type PropsType = {
-    getCategory: (id: string, parentId: string) => Promise<CategoryType>
+    getCategory: (id: string) => Promise<CategoryType>
     updateCategory: (category: CategoryType) => void
     categories: CategoryOutputType[]
-    parentId: string
 }
 
 const CategoriesEdit: React.FC<PropsType> = props => {
@@ -21,18 +20,17 @@ const CategoriesEdit: React.FC<PropsType> = props => {
     const getCategory = props.getCategory
 
     useEffect(() => {
-        getCategory(id, props.parentId).then(response => {
+        getCategory(id).then(response => {
             setCategory(response)
         })
-    }, [getCategory, id, props.parentId])
+    }, [getCategory, id])
 
     return isRedirect ? <Redirect to={"/admin/categories"}/> : <>
         {category && (
             <Formik
                 initialValues={{
                     name: category?.name,
-                    description: category?.description,
-                    parentId: null as null | string
+                    description: category?.description
                 }}
                 validationSchema={CategorySchema}
                 onSubmit={(values) => {
@@ -41,18 +39,6 @@ const CategoriesEdit: React.FC<PropsType> = props => {
                 }}>
                 {({errors, touched, handleChange, handleBlur}) => (
                     <Form className={cn("form", s.form)}>
-                        <div className="formElement">
-                            <select name="parentId" className="formElement__element" onChange={handleChange}
-                                    onBlur={handleBlur}>
-                                <option>Без категории</option>
-                                {props.categories.map(item => {
-                                    return <option key={item.id} value={item.id}>{item.name}</option>
-                                })}
-                            </select>
-                            {errors.parentId && touched.parentId ? (
-                                <div className="formElement__hint">{errors.parentId}</div>
-                            ) : null}
-                        </div>
                         <div className="formElement">
                             <Field name="name" className="formElement__element" placeholder="Название"/>
                             {errors.name && touched.name ? (

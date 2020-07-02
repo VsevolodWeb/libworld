@@ -2,16 +2,16 @@ const shortId = require('shortid')
 const Category = require('../models/Category')
 
 module.exports = {
-	async addCategory({category: {name, description, subcategoryId}}) {
+	async addCategory({category: {name, description, parentId}}) {
 		try {
 			const CategoryFields = {
 				id: shortId(), name, description
 			}
 
-			if (subcategoryId) {
+			if (parentId) {
 				const category = await Category
 					.findOneAndUpdate(
-						{id: subcategoryId}, {$push: {subcategories: CategoryFields}}
+						{id: parentId}, {$push: {subcategories: CategoryFields}}
 					)
 
 				if (!category) return new Error("Ошибка добавления подкатегории")
@@ -29,7 +29,7 @@ module.exports = {
 	},
 	async getCategories() {
 		try {
-			return await Category.find().where("subcategories").ne([])
+			return await Category.find()
 		} catch (e) {
 			throw new Error(e)
 		}
@@ -40,8 +40,13 @@ module.exports = {
 			const removedCategory = await Category.findOneAndDelete({id})
 
 			if (!removedCategory) {
-				await Category
-					.findOneAndUpdate({"subcategories.id": id}, {$pull: {"subcategories": {id}}})
+				const removedSubcategory = await Category
+					.findOneAndUpdate(
+						{"subcategories.id": id},
+						{$pull: {"subcategories": {id}}}
+					)
+
+				if (!removedSubcategory) return new Error("Категория не найдена")
 			}
 
 			return id
@@ -63,20 +68,27 @@ module.exports = {
 		}
 	},
 
-	// async updateCategory({category}) {
-	// 	try {
-	// 		let updatedCategory;
-	//
-	// 		if (category.parentId) {
-	// 			updatedCategory = await Category
-	// 				.findOneAndUpdate({id: category.parentId}, {$set: {"subcategories": {id: category.id}}})
-	// 		} else {
-	// 			updatedCategory = await Category
-	// 				.findOneAndUpdate({id: category.id}, {...category}, {new: true})
-	// 		}
-	// 		return updatedCategory
-	// 	} catch (e) {
-	// 		throw new Error(e)
-	// 	}
-	// },
+	async updateCategory({category: {id, name, description}}) {
+		try {
+			let updatedCategory = await Category
+					.findOneAndUpdate({id}, {name, description}, {new: true})
+
+			if (!updatedCategory) {
+				updatedCategory = await Category
+					.findOneAndUpdate({"subcategories.id": id}, {
+						$set: {
+							"subcategories": {id, name, description}
+						}
+					},
+					{new: true})
+					.then(res => res.subcategories.find(item => item.id === id))
+
+			}
+
+			return updatedCategory || new Error("Категория не найдена")
+
+		} catch (e) {
+			throw new Error(e)
+		}
+	},
 }

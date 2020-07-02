@@ -10,7 +10,7 @@ export type CategoryType = {
     description: string
 }
 export type CategoryInputType = CategoryType & {
-    parentId: null | string
+    parentId: string | null
 }
 
 export type CategoryOutputType = CategoryType & {
@@ -30,7 +30,7 @@ const initialState: InitialStateType = {
 const categoriesReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
     switch (action.type) {
         case "categories/ADD_CATEGORY": {
-            const listCopy = state.list.map(item => Object.assign({}, item));
+            const listCopy = state.list.map(item => Object.assign({}, item))
             const candidateIdx = listCopy.findIndex(item => item.id === action.category.parentId)
 
             if (candidateIdx === -1) {
@@ -45,7 +45,7 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
             return {...state, list: action.categories}
         }
         case "categories/REMOVE_CATEGORY": {
-            const listCopy = state.list.map(item => Object.assign({}, item));
+            const listCopy = state.list.map(item => Object.assign({}, item))
 
             if (action.parentId) {
                 const categoryIdx = listCopy.findIndex(item => item.id === action.parentId)
@@ -59,11 +59,28 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
             }
         }
         case "categories/UPDATE_CATEGORY": {
-            // const stateCopy = Object.assign({}, state);
-            // const candidateId = stateCopy.list.findIndex((el => el.id === action.category.id))
-            // stateCopy.list[candidateId] = action.category
+            let listCopy = state.list.map(item => Object.assign({}, item))
+            const candidateIdx = listCopy.findIndex((el => el.id === action.category.id))
+            if (candidateIdx === -1) {
+                listCopy = listCopy.map(category => {
+                    const candidate = category.subcategories!.filter(item => item.id === action.category.id)
+                    if(candidate) {
+                        return {
+                            ...category,
+                            subcategories: category.subcategories!
+                                .map(item => ({...item, name: action.category.name, description: action.category.description}))}
+                    } else {
+                        return category
+                    }
+                })
+            } else {
+                listCopy[candidateIdx].name = action.category.name
+                listCopy[candidateIdx].description = action.category.description
+            }
 
-            return state
+            console.log(listCopy)
+
+            return {...state, list: listCopy}
         }
         default: {
             return state;
@@ -105,9 +122,9 @@ export const getCategoriesThunkCreator = () => async (dispatch: Dispatch<Actions
     }
 }
 
-export const getCategoryThunkCreator = (id: string, parentId: string) => async () => {
+export const getCategoryThunkCreator = (id: string) => async () => {
     try {
-        const response = await categoriesAPI.getCategory(id, parentId)
+        const response = await categoriesAPI.getCategory(id)
 
         return response.data.getCategory
     } catch (e) {
@@ -117,7 +134,7 @@ export const getCategoryThunkCreator = (id: string, parentId: string) => async (
 
 export const removeCategoryThunkCreator = (id: string, parentId: string) => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
-        const response = await categoriesAPI.removeCategory(id, parentId)
+        const response = await categoriesAPI.removeCategory(id)
 
         dispatch(actions.removeCategory(response.data.removeCategory, parentId))
     } catch (e) {
