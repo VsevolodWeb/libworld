@@ -1,3 +1,4 @@
+const mongoose = require("mongoose")
 const shortId = require('shortid')
 const Category = require('../../models/Category')
 
@@ -5,7 +6,7 @@ module.exports = {
 	async addCategory({category: {name, description, parentId}}) {
 		try {
 			const CategoryFields = {
-				id: shortId(), name, description
+				_id: new mongoose.Types.ObjectId(), id: shortId(), name, description
 			}
 
 			if (parentId) {

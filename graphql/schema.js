@@ -1,27 +1,18 @@
 const {buildSchema} = require("graphql")
+const category = require("./schemas/category.schema")
+const book = require("./schemas/book.schema")
 
 module.exports = buildSchema(`
-	type CategoryType {
-		id: String!
-		name: String!
-		description: String!
-		subcategories: [CategoryType]
-	}
-	input CategoryInput {
-		id: String
-		name: String!
-		description: String!
-		parentId: String
-	}
+	${category.types}
+	${book.types}
 
 	type Mutation {
-		addCategory(category: CategoryInput): CategoryType!
-		removeCategory(id: String!): String!
-		updateCategory(category: CategoryInput!): CategoryType!
+		${category.mutation}
+		${book.mutation}
 	}
 	
 	type Query {
-		getCategories: [CategoryType!]!
-		getCategory(id: String!): CategoryType!
+		${category.query}
+		${book.query}
 	}
 `)
