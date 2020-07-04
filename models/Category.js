@@ -1,15 +1,28 @@
 const {Schema, model} = require('mongoose')
-
-const Category = {
-	_id: Schema.Types.ObjectId,
-	id: {type: String, required: true, unique: true},
-	name: {type: String, required: true, unique: true},
-	description: String
-}
+const slugify = require('../helpers/slugify')
 
 const CategorySchema = new Schema({
-	...Category,
-	subcategories: [Category]
-})
+	name: String,
+	slug: { type: String, index: true },
+	parent: {
+		type: Schema.Types.ObjectId,
+		default: null,
+		ref: 'Category'
+	},
+	ancestors: [{
+		_id: {
+			type: Schema.Types.ObjectId,
+			ref: 'Category',
+			index: true
+		},
+		name: String,
+		slug: String
+	}]
+});
+
+CategorySchema.pre('save', async function (next) {
+   this.slug = slugify(this.name);
+   next();
+});
 
 module.exports = model('Category', CategorySchema)

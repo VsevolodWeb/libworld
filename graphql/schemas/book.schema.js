@@ -18,11 +18,12 @@ const types = `
 `
 
 const query = `
-	
+	readBooks: [BookType!]!
+	readBook(id: String!): BookType!
 `
 
 const mutation = `
-	addBook(book: BookInput!): BookType!
+	createBook(book: BookInput!): BookType!
 `
 
 module.exports = {
