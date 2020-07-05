@@ -1,14 +1,37 @@
 const mongoose = require("mongoose")
 const shortId = require('shortid')
 const Category = require('../../models/Category')
+const buildAncestors = require('../../helpers/buildAncestors')
+const buildHierarchyAncestors = require('../../helpers/buildHierarchyAncestors')
 
 module.exports = {
-	async createCategory({category: {name, description}}) {
-		const category = new Category({name, description})
+	async createCategory({category: {name, description, parentId}}) {
+		const parentIdValue = parentId ? parentId : null;
+		const category = new Category({name, description, parentId})
 
 		try {
-			return await category.save()
-		} catch(e) {
+			const newCategory = await category.save()
+			await buildAncestors(newCategory._id, parentIdValue)
+
+			return newCategory
+		} catch (e) {
+			return new Error(e)
+		}
+	},
+	async readCategory({id}) {
+		try {
+			return await Category.findOne({_id: id})
+		} catch (e) {
+			return new Error(e)
+		}
+	},
+	async updateCategory({category: {_id, name, description, parentId}}) {
+		try {
+			const category = await Category.findByIdAndUpdate(_id, {$set: {name, description, parentId}});
+			await buildHierarchyAncestors(_id, parentId);
+
+			return category
+		} catch (e) {
 			return new Error(e)
 		}
 	}

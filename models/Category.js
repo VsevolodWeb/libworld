@@ -1,10 +1,9 @@
 const {Schema, model} = require('mongoose')
-const slugify = require('../helpers/slugify')
 
 const CategorySchema = new Schema({
-	name: String,
-	slug: { type: String, index: true },
-	parent: {
+	name: {type: String, unique: true, required: true},
+	description: {type: String, required: true},
+	parentId: {
 		type: Schema.Types.ObjectId,
 		default: null,
 		ref: 'Category'
@@ -16,13 +15,8 @@ const CategorySchema = new Schema({
 			index: true
 		},
 		name: String,
-		slug: String
+		description: String
 	}]
-});
-
-CategorySchema.pre('save', async function (next) {
-   this.slug = slugify(this.name);
-   next();
 });
 
 module.exports = model('Category', CategorySchema)

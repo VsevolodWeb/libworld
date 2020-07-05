@@ -1,17 +1,21 @@
 const types = `
 	type CategoryType {
+		_id: String!
 		name: String!
 		description: String!
+		ancestors: [CategoryType]
 	}
 	input CategoryInput {
+		_id: String
 		name: String!
 		description: String!
+		parentId: String
 	}
 `
 
 const query = `
 	getCategories: [CategoryType!]!
-	getCategory(id: String!): CategoryType!
+	readCategory(id: String!): CategoryType!
 `
 
 const mutation = `
