@@ -14,13 +14,13 @@ const types = `
 `
 
 const query = `
-	getCategories: [CategoryType!]!
+	readCategories: [CategoryType!]!
 	readCategory(id: String!): CategoryType!
 `
 
 const mutation = `
 	createCategory(category: CategoryInput!): CategoryType!
-	removeCategory(id: String!): String!
+	deleteCategory(id: String!): String!
 	updateCategory(category: CategoryInput!): CategoryType!
 `
 

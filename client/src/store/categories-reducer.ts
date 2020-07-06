@@ -5,7 +5,7 @@ import {FormikErrors, FormikState} from "formik";
 
 
 export type CategoryType = {
-    id?: string
+    _id?: string
     name: string
     description: string
 }
@@ -14,7 +14,7 @@ export type CategoryInputType = CategoryType & {
 }
 
 export type CategoryOutputType = CategoryType & {
-    subcategories?: CategoryType[]
+    ancestors?: CategoryType[]
 }
 
 type InitialStateType = {

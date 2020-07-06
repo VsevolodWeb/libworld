@@ -6,7 +6,7 @@ module.exports = async function buildHierarchyAncestors(categoryId, parentId) {
 		await buildAncestors(categoryId, parentId)
 	}
 
-	const result = await Category.find({'parent': categoryId})
+	const result = await Category.find({'parentId': categoryId})
 
 	if (result) {
 		result.forEach((doc) => {

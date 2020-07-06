@@ -5,13 +5,12 @@ export const categoriesAPI = {
     addCategory(category: CategoryInputType) {
         const query = `
             mutation {
-                addCategory(category: {name: "${category.name}",
-                                       description: "${category.description}"
-                                       ${category.parentId ?
-                                            `, parentId: "${category.parentId}"` : ''}
-                                       }
-                            ) {
-                    id name description
+                createCategory(category: {
+                    name: "${category.name}",
+                    description: "${category.description}"
+                    ${category.parentId ? `, parentId: "${category.parentId}"` : ''}
+                }) {
+                    _id name description
                 }
             }
         `
@@ -21,9 +20,9 @@ export const categoriesAPI = {
         const query = `
             query {
               getCategories {
-                id name description
-                subcategories {
-                  id name description
+                _id name description
+                ancestors {
+                  _id name description
                 }
               }
             }
