@@ -1,5 +1,3 @@
-const mongoose = require("mongoose")
-const shortId = require('shortid')
 const Category = require('../../models/Category')
 const buildAncestors = require('../../helpers/buildAncestors')
 const buildHierarchyAncestors = require('../../helpers/buildHierarchyAncestors')

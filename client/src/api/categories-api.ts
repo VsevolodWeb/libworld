@@ -19,7 +19,7 @@ export const categoriesAPI = {
     getCategories() {
         const query = `
             query {
-              getCategories {
+              readCategories {
                 _id name description
                 ancestors {
                   _id name description
@@ -27,17 +27,17 @@ export const categoriesAPI = {
               }
             }
         `
-        return api<ApiType<"getCategories", CategoryOutputType[]>>(query)
+        return api<ApiType<"readCategories", CategoryOutputType[]>>(query)
     },
     getCategory(id: string) {
         const query = `
             query {
-              getCategory(id: "${id}") {
-                id name description
+              readCategory(id: "${id}") {
+                _id name description
               }
             }
         `
-        return api<ApiType<"getCategory", CategoryType>>(query)
+        return api<ApiType<"readCategory", CategoryType>>(query)
     },
     removeCategory(id: string) {
         const query = `
@@ -50,7 +50,7 @@ export const categoriesAPI = {
     updateCategory(category: CategoryType) {
         const query = `
             mutation {
-                updateCategory(category: {id: "${category.id}", name: "${category.name}", description: "${category.description}"}) {
+                updateCategory(category: {id: "${category._id}", name: "${category.name}", description: "${category.description}"}) {
                     id name description
                 }
             }

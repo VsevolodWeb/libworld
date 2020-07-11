@@ -62,7 +62,7 @@ const Categories: React.FC<PropsType> = props => {
                                     onBlur={handleBlur}>
                                 <option>Без категории</option>
                                 {props.categories.map(item => {
-                                    return <option key={item.id} value={item.id}>{item.name}</option>
+                                    return <option key={item._id} value={item._id}>{item.name}</option>
                                 })}
                             </select>
                             {errors.parentId && touched.parentId ? (
@@ -103,31 +103,31 @@ const Categories: React.FC<PropsType> = props => {
                     </thead>
                     <tbody>
                     {props.categories.map((parentItem) => (
-                        <React.Fragment key={parentItem.id}>
+                        <React.Fragment key={parentItem._id}>
                             <tr>
                                 <td>
-                                    <NavLink to={`/admin/categories/${parentItem.id}`}
+                                    <NavLink to={`/admin/categories/${parentItem._id}`}
                                              className="link">{parentItem.name}
                                     </NavLink>
                                 </td>
                                 <td>{parentItem.description}</td>
                                 <td>
                                     <button className="button button_sm button_error"
-                                            onClick={() => removeCategory(parentItem.id!, '')}>Удалить
+                                            onClick={() => removeCategory(parentItem._id!, '')}>Удалить
                                     </button>
                                 </td>
                             </tr>
-                            {parentItem.subcategories &&
-                            parentItem.subcategories.map(item => {
-                                return <tr key={item.id}>
+                            {parentItem.ancestors &&
+                            parentItem.ancestors.map(item => {
+                                return <tr key={item._id}>
                                     <td>
-                                        --- <NavLink to={`/admin/categories/${item.id}`}
+                                        --- <NavLink to={`/admin/categories/${item._id}`}
                                                      className="link">{item.name}</NavLink>
                                     </td>
                                     <td>{item.description}</td>
                                     <td>
                                         <button className="button button_sm button_error"
-                                                onClick={() => removeCategory(item.id!, parentItem.id!)}>Удалить
+                                                onClick={() => removeCategory(item._id!, parentItem._id!)}>Удалить
                                         </button>
                                     </td>
                                 </tr>

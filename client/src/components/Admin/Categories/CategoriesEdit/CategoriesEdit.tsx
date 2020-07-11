@@ -34,10 +34,10 @@ const CategoriesEdit: React.FC<PropsType> = props => {
                 }}
                 validationSchema={CategorySchema}
                 onSubmit={(values) => {
-                    props.updateCategory({...values, id})
+                    props.updateCategory({...values, _id: id})
                     setIsRedirect(true)
                 }}>
-                {({errors, touched, handleChange, handleBlur}) => (
+                {({errors, touched}) => (
                     <Form className={cn("form", s.form)}>
                         <div className="formElement">
                             <Field name="name" className="formElement__element" placeholder="Название"/>
