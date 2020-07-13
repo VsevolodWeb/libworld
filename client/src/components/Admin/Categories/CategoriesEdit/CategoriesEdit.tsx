@@ -52,7 +52,7 @@ const CategoriesEdit: React.FC<PropsType> = props => {
                                 <div className="formElement__hint">{errors.description}</div>
                             ) : null}
                         </div>
-                        <button className="button button_success">Обновить категорию</button>
+                        <button className="button button_primary">Обновить категорию</button>
                     </Form>
                 )}
             </Formik>

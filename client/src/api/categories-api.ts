@@ -1,8 +1,8 @@
 import api, {ApiType} from "./api"
-import {CategoryInputType, CategoryOutputType, CategoryType} from "../store/categories-reducer"
+import {CategoryOutputType, CategoryType} from "../store/categories-reducer"
 
 export const categoriesAPI = {
-    addCategory(category: CategoryInputType) {
+    addCategory(category: CategoryType) {
         const query = `
             mutation {
                 createCategory(category: {
@@ -20,7 +20,7 @@ export const categoriesAPI = {
         const query = `
             query {
               readCategories {
-                _id name description
+                _id parentId name description
                 ancestors {
                   _id name description
                 }

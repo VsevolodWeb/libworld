@@ -1,0 +1,23 @@
+.intro
+	display: flex
+	
+.image
+	width: 350px
+	height: 420px
+	border-radius: 10px
+	background-color: var(--accent-color)
+	box-shadow: 0 1px 20px 10px #dedede
+	
+.info
+	flex: 1
+	display: flex
+	flex-flow: column
+	margin-left: 3rem
+	
+.options
+	&__item:not(:last-child)
+		margin-bottom: .5rem
+		
+.read
+	margin-top: auto
+	align-self: flex-start

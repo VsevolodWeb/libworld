@@ -1,6 +1,7 @@
 const types = `
 	type CategoryType {
 		_id: String!
+		parentId: String
 		name: String!
 		description: String!
 		ancestors: [CategoryType]

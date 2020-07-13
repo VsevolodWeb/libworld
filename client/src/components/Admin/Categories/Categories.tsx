@@ -6,12 +6,11 @@ import cn from 'classnames'
 import s from "./Categories.module.sass"
 import {
     addingCategoryThunkCreatorType,
-    CategoryInputType,
     CategoryOutputType, CategoryType
 } from "../../../store/categories-reducer"
 
 
-export const CategorySchema = Yup.object().shape<CategoryInputType>({
+export const CategorySchema = Yup.object().shape<CategoryType>({
     name: Yup.string()
         .min(2, 'Название категории слишком короткое')
         .max(50, 'Название категории слишком длинное')
@@ -48,7 +47,7 @@ const Categories: React.FC<PropsType> = props => {
             <h1 className="title title_lg">Категории</h1>
             <Formik
                 initialValues={
-                    {name: '', description: '', parentId: null as null | string}
+                    {name: '', description: ''}
                 }
                 onSubmit={(values, {setErrors, resetForm}) => {
                     props.addingCategory(values, setErrors, resetForm)
@@ -65,9 +64,6 @@ const Categories: React.FC<PropsType> = props => {
                                     return <option key={item._id} value={item._id}>{item.name}</option>
                                 })}
                             </select>
-                            {errors.parentId && touched.parentId ? (
-                                <div className="formElement__hint">{errors.parentId}</div>
-                            ) : null}
                         </div>
                         <div className="formElement">
                             <Field name="name" className="formElement__element" placeholder="Название"/>
@@ -82,7 +78,7 @@ const Categories: React.FC<PropsType> = props => {
                                 <div className="formElement__hint">{errors.description}</div>
                             ) : null}
                         </div>
-                        <button className="button button_success">Добавить новую категорию!</button>
+                        <button className="button button_primary">Добавить новую категорию!</button>
                     </Form>
                 )}
             </Formik>
@@ -112,13 +108,13 @@ const Categories: React.FC<PropsType> = props => {
                                 </td>
                                 <td>{parentItem.description}</td>
                                 <td>
-                                    <button className="button button_sm button_error"
+                                    <button className="button button_sm button_secondary"
                                             onClick={() => removeCategory(parentItem._id!, '')}>Удалить
                                     </button>
                                 </td>
                             </tr>
-                            {parentItem.ancestors &&
-                            parentItem.ancestors.map(item => {
+                            {parentItem.subcategories &&
+                            parentItem.subcategories.map(item => {
                                 return <tr key={item._id}>
                                     <td>
                                         --- <NavLink to={`/admin/categories/${item._id}`}
@@ -126,7 +122,7 @@ const Categories: React.FC<PropsType> = props => {
                                     </td>
                                     <td>{item.description}</td>
                                     <td>
-                                        <button className="button button_sm button_error"
+                                        <button className="button button_sm button_secondary"
                                                 onClick={() => removeCategory(item._id!, parentItem._id!)}>Удалить
                                         </button>
                                     </td>

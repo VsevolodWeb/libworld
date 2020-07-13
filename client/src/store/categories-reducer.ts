@@ -6,14 +6,13 @@ import {FormikErrors, FormikState} from "formik";
 
 export type CategoryType = {
     _id?: string
+    parentId?: string | null
     name: string
     description: string
 }
-export type CategoryInputType = CategoryType & {
-    parentId: string | null
-}
 
 export type CategoryOutputType = CategoryType & {
+    subcategories: CategoryType[]
     ancestors: CategoryType[]
 }
 
@@ -30,28 +29,22 @@ const initialState: InitialStateType = {
 const categoriesReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
     switch (action.type) {
         case "categories/ADD_CATEGORY": {
-            // const listCopy = state.list.map(item => Object.assign({}, item))
-            // const candidateIdx = listCopy.findIndex(item => item._id === action.category.parentId)
-            //
-            // if (candidateIdx === -1) {
-            //     listCopy.push(action.category)
-            // } else {
-            //     listCopy[candidateIdx].ancestors?.push(action.category)
-            // }
-            //
-            // return {...state, list: listCopy}
+            const listCopy = state.list.map(item => Object.assign({}, item))
+            const candidateIdx = listCopy.findIndex(item => item._id === action.category.parentId)
+
+            if (candidateIdx === -1) {
+                listCopy.push(action.category)
+            } else {
+                listCopy[candidateIdx].ancestors?.push(action.category)
+            }
+
+            return {...state, list: listCopy}
             return state
         }
         case "categories/GET_CATEGORIES": {
-            const categoriesWithSubcategories = action.categories.map((category, index, array) => {
-                if(!category.ancestors.length) return category
 
-                const parent = array.find(item => item._id === category.ancestors[0]._id)
 
-                console.log(category)
-                return category
-            })
-            return {...state, list: categoriesWithSubcategories}
+            return <InitialStateType>{...state, list: categoriesWithSubcategories}
         }
         case "categories/REMOVE_CATEGORY": {
             const listCopy = state.list.map(item => Object.assign({}, item))
@@ -98,13 +91,13 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
 };
 
 export const actions = {
-    addCategory: (category: CategoryInputType) => ({type: 'categories/ADD_CATEGORY', category} as const),
+    addCategory: (category: CategoryType) => ({type: 'categories/ADD_CATEGORY', category} as const),
     getCategories: (categories: CategoryOutputType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const),
     removeCategory: (id: string, parentId: string) => ({type: 'categories/REMOVE_CATEGORY', id, parentId} as const),
     updateCategory: (category: CategoryType) => ({type: 'categories/UPDATE_CATEGORY', category} as const)
 }
 
-export type addingCategoryThunkCreatorType = (category: CategoryInputType, setErrors: (errors: FormikErrors<CategoryInputType>) => void, resetForm: (nextState?: Partial<FormikState<CategoryInputType>>) => void) => void
+export type addingCategoryThunkCreatorType = (category: CategoryType, setErrors: (errors: FormikErrors<CategoryType>) => void, resetForm: (nextState?: Partial<FormikState<CategoryType>>) => void) => void
 export const addingCategoryThunkCreator: addingCategoryThunkCreatorType = (category, setErrors, resetForm) =>
     async (dispatch: Dispatch<ActionsTypes>) => {
         try {
