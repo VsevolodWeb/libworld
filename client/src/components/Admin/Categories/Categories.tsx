@@ -1,13 +1,13 @@
 import React, {useEffect} from 'react'
-import {NavLink} from "react-router-dom"
+import {NavLink} from 'react-router-dom'
 import {Field, Form, Formik,} from 'formik'
 import * as Yup from 'yup'
 import cn from 'classnames'
-import s from "./Categories.module.sass"
+import s from './Categories.module.sass'
 import {
-    addingCategoryThunkCreatorType,
+    createCategoryThunkCreatorType,
     CategoryOutputType, CategoryType
-} from "../../../store/categories-reducer"
+} from '../../../store/categories-reducer'
 
 
 export const CategorySchema = Yup.object().shape<CategoryType>({
@@ -18,8 +18,8 @@ export const CategorySchema = Yup.object().shape<CategoryType>({
     description: Yup.string()
         .min(2, 'Описание категории слишком короткое')
         .required('Обязательно для заполнения'),
-    parentId: Yup.string().nullable().defined()
-});
+    parentId: Yup.string().nullable()
+})
 
 
 type PropsType = {
@@ -27,15 +27,16 @@ type PropsType = {
     getCategory: (id: string, parentId: string) => Promise<CategoryType>
     removeCategory: (id: string, parentId: string) => void
     updateCategory: (category: CategoryType) => void
-    addingCategory: addingCategoryThunkCreatorType
+    createCategory: createCategoryThunkCreatorType
     categories: CategoryOutputType[]
 }
 
 const Categories: React.FC<PropsType> = props => {
-    const getCategories = props.getCategories;
+    const getCategories = props.getCategories
+    let parentIdElements = []
 
     useEffect(() => {
-        getCategories();
+        getCategories()
     }, [getCategories])
 
     const removeCategory = (id: string, parentId: string) => {
@@ -47,23 +48,33 @@ const Categories: React.FC<PropsType> = props => {
             <h1 className="title title_lg">Категории</h1>
             <Formik
                 initialValues={
-                    {name: '', description: ''}
+                    {name: '', description: '', parentId: null} as CategoryType
                 }
                 onSubmit={(values, {setErrors, resetForm}) => {
-                    props.addingCategory(values, setErrors, resetForm)
+                    props.createCategory(values, setErrors, resetForm)
                 }}
                 validationSchema={CategorySchema}
             >
                 {({errors, touched, handleChange, handleBlur}) => (
-                    <Form className={cn("form", s.form)}>
+                    <Form className={cn('form', s.form)}>
+                        {
+                            //parentIdElements = [<option></option>]
+                        }
                         <div className="formElement">
                             <select name="parentId" className="formElement__element" onChange={handleChange}
                                     onBlur={handleBlur}>
-                                <option>Без категории</option>
+
                                 {props.categories.map(item => {
                                     return <option key={item._id} value={item._id}>{item.name}</option>
                                 })}
                             </select>
+                            <Field
+                                name="parentId"
+                                options={[
+
+                                ]}
+                                component={HTMLSelectElement}
+                            />
                         </div>
                         <div className="formElement">
                             <Field name="name" className="formElement__element" placeholder="Название"/>
@@ -78,12 +89,12 @@ const Categories: React.FC<PropsType> = props => {
                                 <div className="formElement__hint">{errors.description}</div>
                             ) : null}
                         </div>
-                        <button className="button button_primary">Добавить новую категорию!</button>
+                        <button className="button button_primary" type="submit">Добавить новую категорию!</button>
                     </Form>
                 )}
             </Formik>
             {props.categories.length ?
-                <table className={cn("table", s.table)}>
+                <table className={cn('table', s.table)}>
                     <thead>
                     <tr>
                         <th>
@@ -135,7 +146,7 @@ const Categories: React.FC<PropsType> = props => {
                 </table>
                 : null}
         </div>
-    );
-};
+    )
+}
 
-export default Categories;
+export default Categories

@@ -24,7 +24,7 @@ const Admin: React.FC<PropsType> = props => {
                                 removeCategory={props.removeCategoryThunkCreator}
                                 getCategory={props.getCategoryThunkCreator}
                                 updateCategory={props.updateCategoryThunkCreator}
-                                addingCategory={props.addingCategoryThunkCreator}
+                                createCategory={props.createCategoryThunkCreator}
                                 categories={props.categories}
                     />
                 </Suspense>

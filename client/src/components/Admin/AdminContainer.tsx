@@ -1,8 +1,8 @@
 import React from "react"
 import Admin from "./Admin";
 import {
-    addingCategoryThunkCreator,
-    addingCategoryThunkCreatorType, CategoryOutputType,
+    createCategoryThunkCreator,
+    createCategoryThunkCreatorType, CategoryOutputType,
     CategoryType,
     getCategoriesThunkCreator, getCategoryThunkCreator, removeCategoryThunkCreator, updateCategoryThunkCreator
 } from "../../store/categories-reducer";
@@ -13,7 +13,7 @@ type MapStateToProps = {
     categories: CategoryOutputType[]
 }
 type MapDispatchToProps = {
-    addingCategoryThunkCreator: addingCategoryThunkCreatorType
+    createCategoryThunkCreator: createCategoryThunkCreatorType
     getCategoriesThunkCreator: () => void
     removeCategoryThunkCreator: (id: string, parentId: string) => void
     getCategoryThunkCreator: (id: string) => Promise<any>
@@ -34,7 +34,7 @@ const mapStateToProps = (state: AppStateType): MapStateToProps => ({
 export default connect(
     mapStateToProps,
     {
-        addingCategoryThunkCreator,
+        createCategoryThunkCreator,
         getCategoriesThunkCreator,
         removeCategoryThunkCreator,
         getCategoryThunkCreator,

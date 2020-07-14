@@ -1,17 +1,20 @@
-const categoriesWithSubcategories = (list) => list.map((category, categoryIndex, array) => {
+import {CategoryOutputType} from '../categories-reducer'
+
+export default (list: CategoryOutputType[]) => list.map((category, categoryIndex, array) => {
     if (!category.parentId) return category
 
     array.forEach((item, index, array) => {
         if (item._id === category.parentId) {
             const element = array[index]
 
+
             element['subcategories'] = [category]
 
-            return array.push(element)
+            array.push(element)
+
+            return
         }
     })
 
     return false
-}).filter(item => item !== false)
-
-export default categoriesWithSubcategories
+}).filter(item => item !== false) as CategoryOutputType[]

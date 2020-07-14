@@ -1,7 +1,8 @@
-import {Dispatch} from "redux";
-import {InferActionsTypes} from "./store";
-import {categoriesAPI} from "../api/categories-api";
-import {FormikErrors, FormikState} from "formik";
+import {Dispatch} from 'redux'
+import {InferActionsTypes} from './store'
+import {categoriesAPI} from '../api/categories-api'
+import {FormikErrors, FormikState} from 'formik'
+import normalizeCategories from './helpers/normalizeCategories'
 
 
 export type CategoryType = {
@@ -12,8 +13,8 @@ export type CategoryType = {
 }
 
 export type CategoryOutputType = CategoryType & {
-    subcategories: CategoryType[]
-    ancestors: CategoryType[]
+    subcategories?: CategoryType[]
+    ancestors?: CategoryType[]
 }
 
 type InitialStateType = {
@@ -23,30 +24,33 @@ type ActionsTypes = InferActionsTypes<typeof actions>
 
 const initialState: InitialStateType = {
     list: []
-};
+}
 
 
 const categoriesReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
     switch (action.type) {
-        case "categories/ADD_CATEGORY": {
-            const listCopy = state.list.map(item => Object.assign({}, item))
-            const candidateIdx = listCopy.findIndex(item => item._id === action.category.parentId)
+        case 'categories/CREATE_CATEGORY': {
+            const listCopy = normalizeCategories(state.list)
+            const newCategory = {...action.category, subcategories: []}
 
-            if (candidateIdx === -1) {
-                listCopy.push(action.category)
+            if(!action.category.parentId) {
+                listCopy.push(newCategory)
             } else {
-                listCopy[candidateIdx].ancestors?.push(action.category)
+                listCopy.forEach(item => {
+                    if (item._id === action.category.parentId) {
+                        item.subcategories!.push(newCategory)
+                    }
+                })
             }
 
             return {...state, list: listCopy}
-            return state
         }
-        case "categories/GET_CATEGORIES": {
-
-
-            return <InitialStateType>{...state, list: categoriesWithSubcategories}
+        case 'categories/GET_CATEGORIES': {
+            const r = normalizeCategories(action.categories)
+            console.log(r)
+            return {...state, list: r}
         }
-        case "categories/REMOVE_CATEGORY": {
+        case 'categories/REMOVE_CATEGORY': {
             const listCopy = state.list.map(item => Object.assign({}, item))
 
             if (action.parentId) {
@@ -60,17 +64,22 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
                 return {...state, list: listCopy.filter(item => item._id !== action.id)}
             }
         }
-        case "categories/UPDATE_CATEGORY": {
+        case 'categories/UPDATE_CATEGORY': {
             let listCopy = state.list.map(item => Object.assign({}, item))
             const candidateIdx = listCopy.findIndex((el => el._id === action.category._id))
             if (candidateIdx === -1) {
                 listCopy = listCopy.map(category => {
                     const candidate = category.ancestors!.filter(item => item._id === action.category._id)
-                    if(candidate) {
+                    if (candidate) {
                         return {
                             ...category,
                             subcategories: category.ancestors!
-                                .map(item => ({...item, name: action.category.name, description: action.category.description}))}
+                                .map(item => ({
+                                    ...item,
+                                    name: action.category.name,
+                                    description: action.category.description
+                                }))
+                        }
                     } else {
                         return category
                     }
@@ -80,31 +89,29 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
                 listCopy[candidateIdx].description = action.category.description
             }
 
-            console.log(listCopy)
-
             return {...state, list: listCopy}
         }
         default: {
-            return state;
+            return state
         }
     }
-};
+}
 
 export const actions = {
-    addCategory: (category: CategoryType) => ({type: 'categories/ADD_CATEGORY', category} as const),
+    createCategory: (category: CategoryType) => ({type: 'categories/CREATE_CATEGORY', category} as const),
     getCategories: (categories: CategoryOutputType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const),
     removeCategory: (id: string, parentId: string) => ({type: 'categories/REMOVE_CATEGORY', id, parentId} as const),
     updateCategory: (category: CategoryType) => ({type: 'categories/UPDATE_CATEGORY', category} as const)
 }
 
-export type addingCategoryThunkCreatorType = (category: CategoryType, setErrors: (errors: FormikErrors<CategoryType>) => void, resetForm: (nextState?: Partial<FormikState<CategoryType>>) => void) => void
-export const addingCategoryThunkCreator: addingCategoryThunkCreatorType = (category, setErrors, resetForm) =>
+export type createCategoryThunkCreatorType = (category: CategoryType, setErrors: (errors: FormikErrors<CategoryType>) => void, resetForm: (nextState?: Partial<FormikState<CategoryType>>) => void) => void
+export const createCategoryThunkCreator: createCategoryThunkCreatorType = (category, setErrors, resetForm) =>
     async (dispatch: Dispatch<ActionsTypes>) => {
         try {
-            const newCategory = await categoriesAPI.addCategory(category)
+            const newCategory = await categoriesAPI.createCategory(category)
 
             if (!newCategory.errors) {
-                dispatch(actions.addCategory({...newCategory.data.addCategory, parentId: category.parentId}))
+                dispatch(actions.createCategory({...newCategory.data.createCategory, parentId: category.parentId}))
                 resetForm()
             } else {
                 setErrors({description: newCategory.errors[0].message})
@@ -154,4 +161,4 @@ export const updateCategoryThunkCreator = (category: CategoryType) => async (dis
     }
 }
 
-export default categoriesReducer;
+export default categoriesReducer
