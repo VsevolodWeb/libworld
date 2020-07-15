@@ -8,7 +8,8 @@ import s from "./CategoriesEdit.module.sass"
 
 
 type PropsType = {
-    getCategory: (id: string) => Promise<CategoryType>
+    readCategories: () => void
+    readCategory: (id: string) => Promise<CategoryType>
     updateCategory: (category: CategoryType) => void
     categories: CategoryOutputType[]
 }
@@ -17,20 +18,23 @@ const CategoriesEdit: React.FC<PropsType> = props => {
     const {id} = useParams()
     const [category, setCategory] = useState<CategoryType | null>(null)
     const [isRedirect, setIsRedirect] = useState<boolean>(false)
-    const getCategory = props.getCategory
+    const readCategory = props.readCategory
+    const readCategories = props.readCategories
 
     useEffect(() => {
-        getCategory(id).then(response => {
+        readCategories()
+        readCategory(id).then(response => {
             setCategory(response)
         })
-    }, [getCategory, id])
+    }, [readCategory, readCategories, id])
 
     return isRedirect ? <Redirect to={"/admin/categories"}/> : <>
         {category && (
             <Formik
                 initialValues={{
                     name: category?.name,
-                    description: category?.description
+                    description: category?.description,
+                    parentId: category?.parentId
                 }}
                 validationSchema={CategorySchema}
                 onSubmit={(values) => {
@@ -39,6 +43,18 @@ const CategoriesEdit: React.FC<PropsType> = props => {
                 }}>
                 {({errors, touched}) => (
                     <Form className={cn("form", s.form)}>
+                        <div className="formElement">
+                            <Field
+                                name="parentId"
+                                className="formElement__element"
+                                as="select"
+                            >
+                                <option value="">Без категории</option>
+                                {props.categories.map(item => {
+                                    return <option key={item._id} value={item._id}>{item.name}</option>
+                                })}
+                            </Field>
+                        </div>
                         <div className="formElement">
                             <Field name="name" className="formElement__element" placeholder="Название"/>
                             {errors.name && touched.name ? (

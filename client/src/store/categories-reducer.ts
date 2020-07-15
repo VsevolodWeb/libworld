@@ -45,7 +45,7 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
 
             return {...state, list: listCopy}
         }
-        case 'categories/GET_CATEGORIES': {
+        case 'categories/READ_CATEGORIES': {
             const r = normalizeCategories(action.categories)
             console.log(r)
             return {...state, list: r}
@@ -65,31 +65,31 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
             }
         }
         case 'categories/UPDATE_CATEGORY': {
-            let listCopy = state.list.map(item => Object.assign({}, item))
-            const candidateIdx = listCopy.findIndex((el => el._id === action.category._id))
-            if (candidateIdx === -1) {
-                listCopy = listCopy.map(category => {
-                    const candidate = category.ancestors!.filter(item => item._id === action.category._id)
-                    if (candidate) {
-                        return {
-                            ...category,
-                            subcategories: category.ancestors!
-                                .map(item => ({
-                                    ...item,
-                                    name: action.category.name,
-                                    description: action.category.description
-                                }))
-                        }
-                    } else {
-                        return category
-                    }
-                })
-            } else {
-                listCopy[candidateIdx].name = action.category.name
-                listCopy[candidateIdx].description = action.category.description
-            }
+            // let listCopy = state.list.map(item => Object.assign({}, item))
+            // const candidateIdx = listCopy.findIndex((el => el._id === action.category._id))
+            // if (candidateIdx === -1) {
+            //     listCopy = listCopy.map(category => {
+            //         const candidate = category.ancestors!.filter(item => item._id === action.category._id)
+            //         if (candidate) {
+            //             return {
+            //                 ...category,
+            //                 subcategories: category.ancestors!
+            //                     .map(item => ({
+            //                         ...item,
+            //                         name: action.category.name,
+            //                         description: action.category.description
+            //                     }))
+            //             }
+            //         } else {
+            //             return category
+            //         }
+            //     })
+            // } else {
+            //     listCopy[candidateIdx].name = action.category.name
+            //     listCopy[candidateIdx].description = action.category.description
+            // }
 
-            return {...state, list: listCopy}
+            return {...state}
         }
         default: {
             return state
@@ -99,7 +99,7 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
 
 export const actions = {
     createCategory: (category: CategoryType) => ({type: 'categories/CREATE_CATEGORY', category} as const),
-    getCategories: (categories: CategoryOutputType[]) => ({type: 'categories/GET_CATEGORIES', categories} as const),
+    readCategories: (categories: CategoryOutputType[]) => ({type: 'categories/READ_CATEGORIES', categories} as const),
     removeCategory: (id: string, parentId: string) => ({type: 'categories/REMOVE_CATEGORY', id, parentId} as const),
     updateCategory: (category: CategoryType) => ({type: 'categories/UPDATE_CATEGORY', category} as const)
 }
@@ -121,19 +121,19 @@ export const createCategoryThunkCreator: createCategoryThunkCreatorType = (categ
         }
     }
 
-export const getCategoriesThunkCreator = () => async (dispatch: Dispatch<ActionsTypes>) => {
+export const readCategoriesThunkCreator = () => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
-        const response = await categoriesAPI.getCategories()
+        const response = await categoriesAPI.readCategories()
 
-        dispatch(actions.getCategories(response.data.readCategories))
+        dispatch(actions.readCategories(response.data.readCategories))
     } catch (e) {
         console.log(e)
     }
 }
 
-export const getCategoryThunkCreator = (id: string) => async () => {
+export const readCategoryThunkCreator = (id: string) => async () => {
     try {
-        const response = await categoriesAPI.getCategory(id)
+        const response = await categoriesAPI.readCategory(id)
 
         return response.data.readCategory
     } catch (e) {

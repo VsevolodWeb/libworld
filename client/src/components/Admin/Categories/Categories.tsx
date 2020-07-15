@@ -23,8 +23,8 @@ export const CategorySchema = Yup.object().shape<CategoryType>({
 
 
 type PropsType = {
-    getCategories: () => void
-    getCategory: (id: string, parentId: string) => Promise<CategoryType>
+    readCategories: () => void
+    readCategory: (id: string, parentId: string) => Promise<CategoryType>
     removeCategory: (id: string, parentId: string) => void
     updateCategory: (category: CategoryType) => void
     createCategory: createCategoryThunkCreatorType
@@ -32,12 +32,11 @@ type PropsType = {
 }
 
 const Categories: React.FC<PropsType> = props => {
-    const getCategories = props.getCategories
-    let parentIdElements = []
+    const readCategories = props.readCategories
 
     useEffect(() => {
-        getCategories()
-    }, [getCategories])
+        readCategories()
+    }, [readCategories])
 
     const removeCategory = (id: string, parentId: string) => {
         props.removeCategory(id, parentId)
@@ -48,7 +47,7 @@ const Categories: React.FC<PropsType> = props => {
             <h1 className="title title_lg">Категории</h1>
             <Formik
                 initialValues={
-                    {name: '', description: '', parentId: null} as CategoryType
+                    {name: '', description: '', parentId: ""} as CategoryType
                 }
                 onSubmit={(values, {setErrors, resetForm}) => {
                     props.createCategory(values, setErrors, resetForm)
@@ -57,24 +56,17 @@ const Categories: React.FC<PropsType> = props => {
             >
                 {({errors, touched, handleChange, handleBlur}) => (
                     <Form className={cn('form', s.form)}>
-                        {
-                            //parentIdElements = [<option></option>]
-                        }
                         <div className="formElement">
-                            <select name="parentId" className="formElement__element" onChange={handleChange}
-                                    onBlur={handleBlur}>
-
+                            <Field
+                                name="parentId"
+                                className="formElement__element"
+                                as="select"
+                            >
+                                <option value="">Без категории</option>
                                 {props.categories.map(item => {
                                     return <option key={item._id} value={item._id}>{item.name}</option>
                                 })}
-                            </select>
-                            <Field
-                                name="parentId"
-                                options={[
-
-                                ]}
-                                component={HTMLSelectElement}
-                            />
+                            </Field>
                         </div>
                         <div className="formElement">
                             <Field name="name" className="formElement__element" placeholder="Название"/>

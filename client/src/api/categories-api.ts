@@ -16,7 +16,7 @@ export const categoriesAPI = {
         `
         return api<ApiType<"createCategory", CategoryType>>(query)
     },
-    getCategories() {
+    readCategories() {
         const query = `
             query {
               readCategories {
@@ -29,11 +29,11 @@ export const categoriesAPI = {
         `
         return api<ApiType<"readCategories", CategoryOutputType[]>>(query)
     },
-    getCategory(id: string) {
+    readCategory(_id: string) {
         const query = `
             query {
-              readCategory(id: "${id}") {
-                _id name description
+              readCategory(id: "${_id}") {
+                _id name description parentId
               }
             }
         `
@@ -50,8 +50,8 @@ export const categoriesAPI = {
     updateCategory(category: CategoryType) {
         const query = `
             mutation {
-                updateCategory(category: {id: "${category._id}", name: "${category.name}", description: "${category.description}"}) {
-                    id name description
+                updateCategory(category: {_id: "${category._id}", name: "${category.name}", description: "${category.description}", parentId: "${category.parentId}"}) {
+                    _id name description
                 }
             }
         `

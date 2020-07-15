@@ -1,11 +1,15 @@
 import React from "react"
 import Admin from "./Admin";
 import {
-    createCategoryThunkCreator,
-    createCategoryThunkCreatorType, CategoryOutputType,
+    createCategoryThunkCreatorType,
+    CategoryOutputType,
     CategoryType,
-    getCategoriesThunkCreator, getCategoryThunkCreator, removeCategoryThunkCreator, updateCategoryThunkCreator
-} from "../../store/categories-reducer";
+    createCategoryThunkCreator,
+    readCategoryThunkCreator,
+    removeCategoryThunkCreator,
+    updateCategoryThunkCreator,
+    readCategoriesThunkCreator
+} from '../../store/categories-reducer'
 import {AppStateType} from "../../store/store";
 import {connect} from "react-redux";
 
@@ -14,9 +18,9 @@ type MapStateToProps = {
 }
 type MapDispatchToProps = {
     createCategoryThunkCreator: createCategoryThunkCreatorType
-    getCategoriesThunkCreator: () => void
+    readCategoriesThunkCreator: () => void
     removeCategoryThunkCreator: (id: string, parentId: string) => void
-    getCategoryThunkCreator: (id: string) => Promise<any>
+    readCategoryThunkCreator: (id: string) => Promise<any>
     updateCategoryThunkCreator: (category: CategoryType) => void
 }
 type OwnProps = {}
@@ -35,9 +39,9 @@ export default connect(
     mapStateToProps,
     {
         createCategoryThunkCreator,
-        getCategoriesThunkCreator,
+        readCategoriesThunkCreator,
         removeCategoryThunkCreator,
-        getCategoryThunkCreator,
+        readCategoryThunkCreator,
         updateCategoryThunkCreator
     }
 )(AdminContainer);

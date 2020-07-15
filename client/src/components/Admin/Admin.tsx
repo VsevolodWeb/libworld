@@ -20,9 +20,9 @@ const Admin: React.FC<PropsType> = props => {
         <Switch>
             <Route exact path="/admin/categories">
                 <Suspense fallback={<div>Загрузка</div>}>
-                    <Categories getCategories={props.getCategoriesThunkCreator}
+                    <Categories readCategories={props.readCategoriesThunkCreator}
                                 removeCategory={props.removeCategoryThunkCreator}
-                                getCategory={props.getCategoryThunkCreator}
+                                readCategory={props.readCategoryThunkCreator}
                                 updateCategory={props.updateCategoryThunkCreator}
                                 createCategory={props.createCategoryThunkCreator}
                                 categories={props.categories}
@@ -31,7 +31,8 @@ const Admin: React.FC<PropsType> = props => {
             </Route>
             <Route path={`/admin/categories/:id`}>
                 <Suspense fallback={<div>Загрузка</div>}>
-                    <CategoriesEdit getCategory={props.getCategoryThunkCreator}
+                    <CategoriesEdit readCategory={props.readCategoryThunkCreator}
+                                    readCategories={props.readCategoriesThunkCreator}
                                     updateCategory={props.updateCategoryThunkCreator}
                                     categories={props.categories}/>
                 </Suspense>
