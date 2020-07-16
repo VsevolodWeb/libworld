@@ -1,14 +1,14 @@
 const shortId = require("shortid")
 const Book = require("../../models/Book")
 const Category = require("../../models/Category")
-const {getCategory} = require("../resolvers/category.resolver")
+const {readCategory} = require("../resolvers/category.resolver")
 
 module.exports = {
 	async createBook({book}) {
 		try {
-			const category = await getCategory({id: book.categoryId})
+			const category = await readCategory({id: book.categoryId})
 
-			if(!category) return new Error("Такой категории не существует")
+			if (!category) return new Error("Такой категории не существует")
 
 			const newBook = new Book({
 				...book,
@@ -16,7 +16,7 @@ module.exports = {
 				category: category._id
 			})
 
-			return newBook.save()
+			return await newBook.save()
 		} catch (e) {
 			throw new Error(e)
 		}
@@ -28,15 +28,22 @@ module.exports = {
 			throw new Error(e)
 		}
 	},
-	async readBook({id}) {
+	async updateBook({book: {_id, name, description, author, year, categoryId}}) {
 		try {
-			const candidate = await Book.findOne({id}).populate('category')
+			return await Book.findByIdAndUpdate(
+				_id,
+				{$set: {_id, name, description, author, year, categoryId}},
+				{new: true}
+			)
+		} catch (e) {
+			throw new Error(e)
+		}
+	},
+	async deleteBook({_id}) {
+		try {
+			await Book.findByIdAndRemove(_id)
 
-			console.log(candidate)
-
-			if(!candidate) return new Error("Книга не найдена")
-
-			return candidate
+			return _id
 		} catch (e) {
 			throw new Error(e)
 		}

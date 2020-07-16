@@ -21,7 +21,7 @@ const Admin: React.FC<PropsType> = props => {
             <Route exact path="/admin/categories">
                 <Suspense fallback={<div>Загрузка</div>}>
                     <Categories readCategories={props.readCategoriesThunkCreator}
-                                removeCategory={props.removeCategoryThunkCreator}
+                                deleteCategory={props.deleteCategoryThunkCreator}
                                 readCategory={props.readCategoryThunkCreator}
                                 updateCategory={props.updateCategoryThunkCreator}
                                 createCategory={props.createCategoryThunkCreator}

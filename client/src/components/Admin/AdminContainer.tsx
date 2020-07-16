@@ -6,7 +6,7 @@ import {
     CategoryType,
     createCategoryThunkCreator,
     readCategoryThunkCreator,
-    removeCategoryThunkCreator,
+    deleteCategoryThunkCreator,
     updateCategoryThunkCreator,
     readCategoriesThunkCreator
 } from '../../store/categories-reducer'
@@ -19,7 +19,7 @@ type MapStateToProps = {
 type MapDispatchToProps = {
     createCategoryThunkCreator: createCategoryThunkCreatorType
     readCategoriesThunkCreator: () => void
-    removeCategoryThunkCreator: (id: string, parentId: string) => void
+    deleteCategoryThunkCreator: (id: string, parentId: string) => void
     readCategoryThunkCreator: (id: string) => Promise<any>
     updateCategoryThunkCreator: (category: CategoryType) => void
 }
@@ -40,7 +40,7 @@ export default connect(
     {
         createCategoryThunkCreator,
         readCategoriesThunkCreator,
-        removeCategoryThunkCreator,
+        deleteCategoryThunkCreator,
         readCategoryThunkCreator,
         updateCategoryThunkCreator
     }

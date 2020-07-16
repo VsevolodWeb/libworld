@@ -36,27 +36,29 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
             if(!action.category.parentId) {
                 listCopy.push(newCategory)
             } else {
-                listCopy.forEach(item => {
+                for(let item of listCopy) {
                     if (item._id === action.category.parentId) {
-                        item.subcategories!.push(newCategory)
+                        if(!item.subcategories) item.subcategories = []
+
+                        item.subcategories.push(newCategory)
+
+                        break
                     }
-                })
+                }
             }
 
             return {...state, list: listCopy}
         }
         case 'categories/READ_CATEGORIES': {
-            const r = normalizeCategories(action.categories)
-            console.log(r)
-            return {...state, list: r}
+            return {...state, list: normalizeCategories(action.categories)}
         }
-        case 'categories/REMOVE_CATEGORY': {
+        case 'categories/DELETE_CATEGORY': {
             const listCopy = state.list.map(item => Object.assign({}, item))
 
             if (action.parentId) {
                 const categoryIdx = listCopy.findIndex(item => item._id === action.parentId)
 
-                listCopy[categoryIdx].ancestors = listCopy[categoryIdx].ancestors!
+                listCopy[categoryIdx].subcategories = listCopy[categoryIdx].subcategories!
                     .filter(item => item._id !== action.id)
 
                 return {...state, list: listCopy}
@@ -89,7 +91,7 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
             //     listCopy[candidateIdx].description = action.category.description
             // }
 
-            return {...state}
+            return state
         }
         default: {
             return state
@@ -100,7 +102,7 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
 export const actions = {
     createCategory: (category: CategoryType) => ({type: 'categories/CREATE_CATEGORY', category} as const),
     readCategories: (categories: CategoryOutputType[]) => ({type: 'categories/READ_CATEGORIES', categories} as const),
-    removeCategory: (id: string, parentId: string) => ({type: 'categories/REMOVE_CATEGORY', id, parentId} as const),
+    deleteCategory: (id: string, parentId: string) => ({type: 'categories/DELETE_CATEGORY', id, parentId} as const),
     updateCategory: (category: CategoryType) => ({type: 'categories/UPDATE_CATEGORY', category} as const)
 }
 
@@ -141,11 +143,11 @@ export const readCategoryThunkCreator = (id: string) => async () => {
     }
 }
 
-export const removeCategoryThunkCreator = (id: string, parentId: string) => async (dispatch: Dispatch<ActionsTypes>) => {
+export const deleteCategoryThunkCreator = (id: string, parentId: string) => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
-        const response = await categoriesAPI.removeCategory(id)
+        const response = await categoriesAPI.deleteCategory(id)
 
-        dispatch(actions.removeCategory(response.data.removeCategory, parentId))
+        dispatch(actions.deleteCategory(response.data.deleteCategory, parentId))
     } catch (e) {
         console.log(e)
     }
@@ -153,9 +155,12 @@ export const removeCategoryThunkCreator = (id: string, parentId: string) => asyn
 
 export const updateCategoryThunkCreator = (category: CategoryType) => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
-        const response = await categoriesAPI.updateCategory(category)
+        await categoriesAPI.updateCategory(category)
 
-        dispatch(actions.updateCategory(response.data.updateCategory))
+        //todo исправить, сделать перенос книги в другую категорию
+        const response = await categoriesAPI.readCategories()
+
+        dispatch(actions.readCategories(response.data.readCategories))
     } catch (e) {
         console.log(e)
     }

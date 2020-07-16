@@ -1,29 +1,32 @@
 const types = `
-	input BookInput {
-		name: String!
-		description: String!
-		author: String!
-		categoryId: String!
-		year: Int!
-	}
-	
 	type BookType {
-		id: String!
+		_id: String!
 		name: String!
 		description: String!
 		author: String!
 		category: CategoryType!
 		year: Int!
 	}
+
+	input BookInput {
+		_id: String
+		name: String!
+		description: String!
+		author: String!
+		categoryId: String!
+		year: Int!
+	}
 `
 
 const query = `
 	readBooks: [BookType!]!
-	readBook(id: String!): BookType!
+	readBook(_id: String!): BookType!
 `
 
 const mutation = `
 	createBook(book: BookInput!): BookType!
+	updateBook(book: BookInput!): BookType!
+	deleteBook(_id: String!): String!
 `
 
 module.exports = {

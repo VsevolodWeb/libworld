@@ -39,13 +39,13 @@ export const categoriesAPI = {
         `
         return api<ApiType<"readCategory", CategoryType>>(query)
     },
-    removeCategory(id: string) {
+    deleteCategory(id: string) {
         const query = `
             mutation {
-                removeCategory(id: "${id}")
+                deleteCategory(id: "${id}")
             }
         `
-        return api<ApiType<"removeCategory", string>>(query)
+        return api<ApiType<"deleteCategory", string>>(query)
     },
     updateCategory(category: CategoryType) {
         const query = `

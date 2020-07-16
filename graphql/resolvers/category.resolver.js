@@ -33,7 +33,7 @@ module.exports = {
 	async updateCategory({category: {_id, name, description, parentId}}) {
 		try {
 			const category = await Category.findByIdAndUpdate(_id, {$set: {name, description, parentId}}, {new: true});
-			console.log(category)
+
 			await buildHierarchyAncestors(_id, parentId);
 
 			return category

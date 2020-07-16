@@ -25,7 +25,7 @@ export const CategorySchema = Yup.object().shape<CategoryType>({
 type PropsType = {
     readCategories: () => void
     readCategory: (id: string, parentId: string) => Promise<CategoryType>
-    removeCategory: (id: string, parentId: string) => void
+    deleteCategory: (id: string, parentId: string) => void
     updateCategory: (category: CategoryType) => void
     createCategory: createCategoryThunkCreatorType
     categories: CategoryOutputType[]
@@ -39,7 +39,7 @@ const Categories: React.FC<PropsType> = props => {
     }, [readCategories])
 
     const removeCategory = (id: string, parentId: string) => {
-        props.removeCategory(id, parentId)
+        props.deleteCategory(id, parentId)
     }
 
     return (
