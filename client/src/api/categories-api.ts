@@ -39,14 +39,6 @@ export const categoriesAPI = {
         `
         return api<ApiType<"readCategory", CategoryType>>(query)
     },
-    deleteCategory(id: string) {
-        const query = `
-            mutation {
-                deleteCategory(id: "${id}")
-            }
-        `
-        return api<ApiType<"deleteCategory", string>>(query)
-    },
     updateCategory(category: CategoryType) {
         const query = `
             mutation {
@@ -57,4 +49,12 @@ export const categoriesAPI = {
         `
         return api<ApiType<"updateCategory", CategoryType>>(query)
     },
+    deleteCategory(id: string) {
+        const query = `
+            mutation {
+                deleteCategory(id: "${id}")
+            }
+        `
+        return api<ApiType<"deleteCategory", string>>(query)
+    }
 }
