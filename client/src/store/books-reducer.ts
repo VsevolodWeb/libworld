@@ -24,7 +24,7 @@ const initialState: InitialStateType = {
 }
 
 
-const categoriesReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
+const booksReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
     switch (action.type) {
         case 'books/CREATE_BOOK': {
             const list = state.list.map(item => Object.assign({}, item))
@@ -44,6 +44,11 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
                 list: list.map(item => action.book._id === item._id ? {...action.book} : item)
             }
         }
+
+        case 'books/DELETE_BOOK': {
+           return {...state, list: state.list.filter(item => item._id !== action._id)}
+        }
+
         default: {
             return state
         }
@@ -53,7 +58,8 @@ const categoriesReducer = (state = initialState, action: ActionsTypes): InitialS
 export const actions = {
     createBook: (book: BookType) => ({type: 'books/CREATE_BOOK', book} as const),
     readBooks: (books: BookType[]) => ({type: 'books/READ_BOOKS', books} as const),
-    updateBook: (book: BookType) => ({type: 'books/UPDATE_BOOK', book} as const)
+    updateBook: (book: BookType) => ({type: 'books/UPDATE_BOOK', book} as const),
+    deleteBook: (_id: string) => ({type: 'books/DELETE_BOOK', _id} as const)
 }
 
 export const createBookThunkCreator = (book: BookType) => async (dispatch: Dispatch<ActionsTypes>) => {
@@ -76,7 +82,7 @@ export const readBooksThunkCreator = () => async (dispatch: Dispatch<ActionsType
     }
 }
 
-export const readBookThunkCreator = (_id: string) => async (dispatch: Dispatch<ActionsTypes>) => {
+export const readBookThunkCreator = (_id: string) => async () => {
     try {
         const response = await booksAPI.readBook(_id)
 
@@ -96,4 +102,15 @@ export const updateBookThunkCreator = (book: BookType) => async (dispatch: Dispa
     }
 }
 
-export default categoriesReducer
+export const deleteBookThunkCreator = (_id: string) => async (dispatch: Dispatch<ActionsTypes>) => {
+    try {
+        const response = await booksAPI.deleteBook(_id)
+
+        dispatch(actions.deleteBook(response.data.deleteCategory))
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+
+export default booksReducer

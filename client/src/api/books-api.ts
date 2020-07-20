@@ -70,10 +70,10 @@ export const booksAPI = {
         `
         return api<ApiType<"updateBook", BookType>>(query)
     },
-    deleteBook(id: string) {
+    deleteBook(_id: string) {
         const query = `
             mutation {
-                deleteBook(id: "${id}")
+                deleteBook(_id: "${_id}")
             }
         `
         return api<ApiType<'deleteCategory', string>>(query)
