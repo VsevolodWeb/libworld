@@ -1,40 +1,60 @@
 import React, {Suspense} from 'react'
-import Categories from "./Categories/Categories"
-import {Route, NavLink, Switch} from 'react-router-dom';
+import {Route, NavLink, Switch} from 'react-router-dom'
 
-import {PropsType} from "./AdminContainer";
-import s from "./Admin.module.sass"
-import CategoriesEdit from "./Categories/CategoriesEdit/CategoriesEdit";
+import Categories from './Categories/Categories'
+import EditingCategory from './Categories/EditingCategory/EditingCategory'
+import Books from './Books/Books'
+//import EditingBook from './Books/EditingBook/EditingBook'
+import {PropsType} from './AdminContainer'
+import s from './Admin.module.sass'
 
 
 const Admin: React.FC<PropsType> = props => {
     return <div>
         <ul className={s.menu}>
             <li className={s.menu__item}>
-                <NavLink to={"/admin/categories"} className={s.menu__link}>Жанры</NavLink>
+                <NavLink to={'/admin/categories'} className={s.menu__link}>Жанры</NavLink>
             </li>
             <li className={s.menu__item}>
-                <NavLink to={"/admin/books"} className={s.menu__link}>Книги</NavLink>
+                <NavLink to={'/admin/books'} className={s.menu__link}>Книги</NavLink>
             </li>
         </ul>
         <Switch>
             <Route exact path="/admin/categories">
                 <Suspense fallback={<div>Загрузка</div>}>
-                    <Categories readCategories={props.readCategoriesThunkCreator}
+                    <Categories createCategory={props.createCategoryThunkCreator}
+                                readCategories={props.readCategoriesThunkCreator}
                                 deleteCategory={props.deleteCategoryThunkCreator}
-                                readCategory={props.readCategoryThunkCreator}
-                                updateCategory={props.updateCategoryThunkCreator}
-                                createCategory={props.createCategoryThunkCreator}
                                 categories={props.categories}
                     />
                 </Suspense>
             </Route>
             <Route path={`/admin/categories/:id`}>
                 <Suspense fallback={<div>Загрузка</div>}>
-                    <CategoriesEdit readCategory={props.readCategoryThunkCreator}
-                                    readCategories={props.readCategoriesThunkCreator}
-                                    updateCategory={props.updateCategoryThunkCreator}
-                                    categories={props.categories}/>
+                    <EditingCategory readCategories={props.readCategoriesThunkCreator}
+                                     readCategory={props.readCategoryThunkCreator}
+                                     updateCategory={props.updateCategoryThunkCreator}
+                                     categories={props.categories}
+                    />
+                </Suspense>
+            </Route>
+            <Route exact path="/admin/books">
+                <Suspense fallback={<div>Загрузка</div>}>
+                    <Books readBooks={props.readBooksThunkCreator}
+                           readCategories={props.readCategoriesThunkCreator}
+                           deleteBook={props.deleteBookThunkCreator}
+                           createBook={props.createBookThunkCreator}
+                           books={props.books}
+                           categories={props.categories}
+                    />
+                </Suspense>
+            </Route>
+            <Route path={`/admin/books/:id`}>
+                <Suspense fallback={<div>Загрузка</div>}>
+                    {/*<EditingBook readBook={props.readBookThunkCreator}*/}
+                    {/*             readBooks={props.readBooksThunkCreator}*/}
+                    {/*             updateBook={props.updateBookThunkCreator}*/}
+                    {/*             books={props.books}/>*/}
                 </Suspense>
             </Route>
         </Switch>

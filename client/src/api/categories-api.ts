@@ -1,5 +1,5 @@
-import api, {ApiType} from "./api"
-import {CategoryOutputType, CategoryType} from "../store/categories-reducer"
+import api, {ApiType} from './api'
+import {CategoryOutputType, CategoryType} from '../store/categories-reducer'
 
 export const categoriesAPI = {
     createCategory(category: CategoryType) {
@@ -14,7 +14,7 @@ export const categoriesAPI = {
                 }
             }
         `
-        return api<ApiType<"createCategory", CategoryType>>(query)
+        return api<ApiType<'createCategory', CategoryType>>(query)
     },
     readCategories() {
         const query = `
@@ -27,7 +27,9 @@ export const categoriesAPI = {
               }
             }
         `
-        return api<ApiType<"readCategories", CategoryOutputType[]>>(query)
+        const functionName = this.readCategories.name
+        type functionNameType = typeof functionName
+        return api<ApiType<functionNameType, CategoryOutputType[]>>(query)
     },
     readCategory(_id: string) {
         const query = `
@@ -37,7 +39,7 @@ export const categoriesAPI = {
               }
             }
         `
-        return api<ApiType<"readCategory", CategoryType>>(query)
+        return api<ApiType<'readCategory', CategoryType>>(query)
     },
     updateCategory(category: CategoryType) {
         const query = `
@@ -47,7 +49,7 @@ export const categoriesAPI = {
                 }
             }
         `
-        return api<ApiType<"updateCategory", CategoryType>>(query)
+        return api<ApiType<'updateCategory', CategoryType>>(query)
     },
     deleteCategory(id: string) {
         const query = `
@@ -55,6 +57,6 @@ export const categoriesAPI = {
                 deleteCategory(id: "${id}")
             }
         `
-        return api<ApiType<"deleteCategory", string>>(query)
+        return api<ApiType<'deleteCategory', string>>(query)
     }
 }

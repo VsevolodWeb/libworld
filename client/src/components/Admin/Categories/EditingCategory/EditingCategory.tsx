@@ -4,7 +4,7 @@ import {Field, Form, Formik} from "formik"
 import cn from "classnames"
 import {CategoryOutputType, CategoryType} from "../../../../store/categories-reducer"
 import {CategorySchema} from "../Categories"
-import s from "./CategoriesEdit.module.sass"
+import s from "./EditingCategory.module.sass"
 
 
 type PropsType = {
@@ -14,7 +14,7 @@ type PropsType = {
     categories: CategoryOutputType[]
 }
 
-const CategoriesEdit: React.FC<PropsType> = props => {
+const EditingCategory: React.FC<PropsType> = props => {
     const {id} = useParams()
     const [category, setCategory] = useState<CategoryType | null>(null)
     const [isRedirect, setIsRedirect] = useState<boolean>(false)
@@ -76,4 +76,4 @@ const CategoriesEdit: React.FC<PropsType> = props => {
     </>
 }
 
-export default CategoriesEdit
+export default EditingCategory

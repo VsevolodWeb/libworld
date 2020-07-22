@@ -2,10 +2,11 @@ import {Dispatch} from 'redux'
 import {CategoryType} from './categories-reducer'
 import {InferActionsTypes} from './store'
 import {booksAPI} from '../api/books-api'
+import {FormikErrors, FormikState} from 'formik'
 
 
 export type BookType = {
-    _id: string
+    _id?: string
     name: string
     description: string
     author: string
@@ -46,7 +47,7 @@ const booksReducer = (state = initialState, action: ActionsTypes): InitialStateT
         }
 
         case 'books/DELETE_BOOK': {
-           return {...state, list: state.list.filter(item => item._id !== action._id)}
+            return {...state, list: state.list.filter(item => item._id !== action._id)}
         }
 
         default: {
@@ -62,11 +63,17 @@ export const actions = {
     deleteBook: (_id: string) => ({type: 'books/DELETE_BOOK', _id} as const)
 }
 
-export const createBookThunkCreator = (book: BookType) => async (dispatch: Dispatch<ActionsTypes>) => {
+export type createBookThunkCreatorType = (book: BookType, setErrors: (errors: FormikErrors<BookType>) => void, resetForm: (nextState?: Partial<FormikState<BookType>>) => void) => void
+export const createBookThunkCreator: createBookThunkCreatorType = (book, setErrors, resetForm) => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
-        const response = await booksAPI.createBook(book)
+        const newBook = await booksAPI.createBook(book)
 
-        dispatch(actions.createBook(response.data.createBook))
+        if (!newBook.errors) {
+            dispatch(actions.createBook({...newBook.data.createBook}))
+            resetForm()
+        } else {
+            setErrors({description: newBook.errors[0].message})
+        }
     } catch (e) {
         console.log(e)
     }

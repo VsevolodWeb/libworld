@@ -16,7 +16,7 @@ import {
     readBooksThunkCreator,
     readBookThunkCreator,
     deleteBookThunkCreator,
-    updateBookThunkCreator
+    updateBookThunkCreator, createBookThunkCreatorType
 } from '../../store/books-reducer'
 import {AppStateType} from "../../store/store";
 import {connect} from "react-redux";
@@ -32,7 +32,7 @@ type MapDispatchToProps = {
     updateCategoryThunkCreator: (category: CategoryType) => void
     deleteCategoryThunkCreator: (_id: string, parentId: string) => void
 
-    createBookThunkCreator: (book: BookType) => void
+    createBookThunkCreator: createBookThunkCreatorType
     readBooksThunkCreator: () => void
     readBookThunkCreator: (_id: string) => Promise<any>
     updateBookThunkCreator: (book: BookType) => void
