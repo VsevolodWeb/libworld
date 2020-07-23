@@ -1,6 +1,4 @@
-const shortId = require("shortid")
 const Book = require("../../models/Book")
-const Category = require("../../models/Category")
 const {readCategory} = require("../resolvers/category.resolver")
 
 module.exports = {
@@ -11,9 +9,7 @@ module.exports = {
 			if (!category) return new Error("Такой категории не существует")
 
 			const newBook = new Book({
-				...book,
-				id: shortId(),
-				category: category._id
+				...book, category
 			})
 
 			return await newBook.save()
@@ -23,7 +19,7 @@ module.exports = {
 	},
 	async readBooks() {
 		try {
-			return await Book.find()
+			return await Book.find().populate('category')
 		} catch (e) {
 			throw new Error(e)
 		}

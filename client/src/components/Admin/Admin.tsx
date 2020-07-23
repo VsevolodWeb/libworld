@@ -4,7 +4,7 @@ import {Route, NavLink, Switch} from 'react-router-dom'
 import Categories from './Categories/Categories'
 import EditingCategory from './Categories/EditingCategory/EditingCategory'
 import Books from './Books/Books'
-//import EditingBook from './Books/EditingBook/EditingBook'
+import EditingBook from './Books/EditingBook/EditingBook'
 import {PropsType} from './AdminContainer'
 import s from './Admin.module.sass'
 
@@ -51,10 +51,10 @@ const Admin: React.FC<PropsType> = props => {
             </Route>
             <Route path={`/admin/books/:id`}>
                 <Suspense fallback={<div>Загрузка</div>}>
-                    {/*<EditingBook readBook={props.readBookThunkCreator}*/}
-                    {/*             readBooks={props.readBooksThunkCreator}*/}
-                    {/*             updateBook={props.updateBookThunkCreator}*/}
-                    {/*             books={props.books}/>*/}
+                    <EditingBook readBook={props.readBookThunkCreator}
+                                 readBooks={props.readBooksThunkCreator}
+                                 updateBook={props.updateBookThunkCreator}
+                                 categories={props.categories}/>
                 </Suspense>
             </Route>
         </Switch>

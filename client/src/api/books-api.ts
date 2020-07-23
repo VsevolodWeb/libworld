@@ -5,7 +5,7 @@ export const booksAPI = {
     createBook(book: BookType) {
         const query = `
             mutation {
-              createBook(book: {name: "${book.name}", description: "${book.description}", author: "${book.author}", categoryId: "${book.categoryId}", year: "${book.year}"}) {
+              createBook(book: {name: "${book.name}", description: "${book.description}", author: "${book.author}", categoryId: "${book.categoryId}", year: ${book.year}}) {
                 _id
                 name
                 description
@@ -76,6 +76,6 @@ export const booksAPI = {
                 deleteBook(_id: "${_id}")
             }
         `
-        return api<ApiType<'deleteCategory', string>>(query)
+        return api<ApiType<'deleteBook', string>>(query)
     }
 }

@@ -12,7 +12,7 @@ export type BookType = {
     author: string
     categoryId?: string
     category?: CategoryType
-    year: number
+    year: number | ''
 }
 
 type InitialStateType = {
@@ -112,8 +112,9 @@ export const updateBookThunkCreator = (book: BookType) => async (dispatch: Dispa
 export const deleteBookThunkCreator = (_id: string) => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
         const response = await booksAPI.deleteBook(_id)
+        console.log(response)
 
-        dispatch(actions.deleteBook(response.data.deleteCategory))
+        dispatch(actions.deleteBook(response.data.deleteBook))
     } catch (e) {
         console.log(e)
     }

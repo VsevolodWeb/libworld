@@ -50,12 +50,16 @@ const Books: React.FC<PropsType> = props => {
             <h1 className="title title_lg">Книги</h1>
             <Formik
                 initialValues={
-                    {name: '', description: '', author: ''} as BookType
+                    {name: '', description: '', author: '', year: '',
+                        categoryId: props.categories[0] ? props.categories[0]._id : ''
+                    } as BookType
                 }
                 onSubmit={(values, {setErrors, resetForm}) => {
+                    console.log(values)
                     props.createBook(values, setErrors, resetForm)
                 }}
                 validationSchema={BookSchema}
+                enableReinitialize={true}
             >
                 {({errors, touched}) => (
                     <Form className={cn('form', s.form)}>
@@ -83,7 +87,7 @@ const Books: React.FC<PropsType> = props => {
                             ) : null}
                         </div>
                         <div className="formElement">
-                            <Field name="year" className="formElement__element" placeholder="Год"/>
+                            <Field name="year" type={'number'} className="formElement__element" placeholder="Год"/>
                             {errors.year && touched.year ? (
                                 <div className="formElement__hint">{errors.year}</div>
                             ) : null}
@@ -110,29 +114,32 @@ const Books: React.FC<PropsType> = props => {
                         <th>
                             Описание
                         </th>
+                        <th>Категория</th>
                         <th>
                             Автор
                         </th>
                         <th>
                             Год
                         </th>
+                        <th>Действия</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {props.books.map((parentItem) => (
-                        <React.Fragment key={parentItem._id}>
+                    {props.books.map((item) => (
+                        <React.Fragment key={item._id}>
                             <tr>
                                 <td>
-                                    <NavLink to={`/admin/books/${parentItem._id}`}
-                                             className="link">{parentItem.name}
+                                    <NavLink to={`/admin/books/${item._id}`}
+                                             className="link">{item.name}
                                     </NavLink>
                                 </td>
-                                <td>{parentItem.description}</td>
-                                <td>{parentItem.author}</td>
-                                <td>{parentItem.year}</td>
+                                <td>{item.description}</td>
+                                <td>{item.category?.name}</td>
+                                <td>{item.author}</td>
+                                <td>{item.year}</td>
                                 <td>
                                     <button className="button button_sm button_secondary"
-                                            onClick={() => removeBook(parentItem._id!)}>
+                                            onClick={() => removeBook(item._id!)}>
                                         Удалить
                                     </button>
                                 </td>

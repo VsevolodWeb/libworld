@@ -18,15 +18,15 @@ const EditingCategory: React.FC<PropsType> = props => {
     const {id} = useParams()
     const [category, setCategory] = useState<CategoryType | null>(null)
     const [isRedirect, setIsRedirect] = useState<boolean>(false)
-    const readCategory = props.readCategory
     const readCategories = props.readCategories
+    const readCategory = props.readCategory
 
     useEffect(() => {
         readCategories()
         readCategory(id).then(response => {
             setCategory(response)
         })
-    }, [readCategory, readCategories, id])
+    }, [readCategories, readCategory, id])
 
     return isRedirect ? <Redirect to={"/admin/categories"}/> : <>
         {category && (
