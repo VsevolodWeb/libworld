@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {ChangeEvent, useEffect, useState} from 'react'
 import {NavLink} from 'react-router-dom'
 import {Field, Form, Formik,} from 'formik'
 import * as Yup from 'yup'
@@ -33,6 +33,7 @@ type PropsType = {
 }
 
 const Books: React.FC<PropsType> = props => {
+    const [cover, setCover] = useState<File | null>(null)
     const readBooks = props.readBooks
     const readCategories = props.readCategories
 
@@ -45,17 +46,22 @@ const Books: React.FC<PropsType> = props => {
         props.deleteBook(_id)
     }
 
+    const onCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setCover(e.currentTarget.files && e.currentTarget.files[0])
+    }
+
     return (
         <div>
             <h1 className="title title_lg">Книги</h1>
             <Formik
                 initialValues={
-                    {name: '', description: '', author: '', year: '',
+                    {
+                        name: '', cover: '', description: '', author: '', year: '',
                         categoryId: props.categories[0] ? props.categories[0]._id : ''
                     } as BookType
                 }
                 onSubmit={(values, {setErrors, resetForm}) => {
-                    console.log(values)
+                    console.log(cover)
                     props.createBook(values, setErrors, resetForm)
                 }}
                 validationSchema={BookSchema}
@@ -76,6 +82,12 @@ const Books: React.FC<PropsType> = props => {
                         </div>
                         <div className="formElement">
                             <Field name="name" className="formElement__element" placeholder="Название"/>
+                            {errors.name && touched.name ? (
+                                <div className="formElement__hint">{errors.name}</div>
+                            ) : null}
+                        </div>
+                        <div className="formElement">
+                            <Field name="cover" type="file" className="formElement__element" onChange={onCoverChange}/>
                             {errors.name && touched.name ? (
                                 <div className="formElement__hint">{errors.name}</div>
                             ) : null}

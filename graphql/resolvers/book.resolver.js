@@ -24,11 +24,18 @@ module.exports = {
 			throw new Error(e)
 		}
 	},
+	async readBook({_id}) {
+		try {
+			return await Book.findById({_id}).populate('category')
+		} catch (e) {
+			throw new Error(e)
+		}
+	},
 	async updateBook({book: {_id, name, description, author, year, categoryId}}) {
 		try {
 			return await Book.findByIdAndUpdate(
 				_id,
-				{$set: {_id, name, description, author, year, categoryId}},
+				{$set: {_id, name, description, author, year, category: categoryId}},
 				{new: true}
 			)
 		} catch (e) {

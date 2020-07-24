@@ -16,16 +16,16 @@ module.exports = {
 			return new Error(e)
 		}
 	},
-	async readCategory({id}) {
+	async readCategories() {
 		try {
-			return await Category.findOne({_id: id})
+			return await Category.find()
 		} catch (e) {
 			return new Error(e)
 		}
 	},
-	async readCategories() {
+	async readCategory({id}) {
 		try {
-			return await Category.find()
+			return await Category.findOne({_id: id})
 		} catch (e) {
 			return new Error(e)
 		}

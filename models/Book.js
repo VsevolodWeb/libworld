@@ -3,7 +3,7 @@ const {Schema, model} = require('mongoose');
 const schema = new Schema({
 	name: {type: String, required: true, unique: true},
 	description: String,
-	//cover: String, //?
+	cover: String,
 	//text: {type: String, required: true, unique: true}, //?
 	author: String,
 	category: {type: Schema.ObjectId, ref: 'Category'},

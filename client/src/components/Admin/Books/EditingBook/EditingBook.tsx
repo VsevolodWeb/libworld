@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from "react"
-import {useParams, Redirect} from "react-router-dom"
-import {Field, Form, Formik} from "formik"
-import cn from "classnames"
-import {CategoryOutputType} from "../../../../store/categories-reducer"
-import {BookSchema} from "../Books"
-import s from "./EditingBook.module.sass"
+import React, {useEffect, useState} from 'react'
+import {useParams, Redirect} from 'react-router-dom'
+import {Field, Form, Formik} from 'formik'
+import cn from 'classnames'
+import {CategoryOutputType} from '../../../../store/categories-reducer'
+import {BookSchema} from '../Books'
+import s from './EditingBook.module.sass'
 import {BookType} from '../../../../store/books-reducer'
 
 
 type PropsType = {
-    readBooks: () => void
+    readCategories: () => void
     readBook: (id: string) => Promise<any>
     updateBook: (book: BookType) => void
     categories: CategoryOutputType[]
@@ -19,17 +19,17 @@ const EditingBook: React.FC<PropsType> = props => {
     const {id} = useParams()
     const [book, setBook] = useState<BookType | null>(null)
     const [isRedirect, setIsRedirect] = useState<boolean>(false)
-    const readBooks = props.readBooks
+    const readCategories = props.readCategories
     const readBook = props.readBook
 
     useEffect(() => {
-        readBooks()
+        readCategories()
         readBook(id).then(response => {
             setBook(response)
         })
-    }, [readBooks, readBook, id])
+    }, [readCategories, readBook, id])
 
-    return isRedirect ? <Redirect to={"/admin/books"}/> : <>
+    return isRedirect ? <Redirect to={'/admin/books'}/> : <>
         {book && (
             <Formik
                 initialValues={{
@@ -37,7 +37,7 @@ const EditingBook: React.FC<PropsType> = props => {
                     description: book.description,
                     author: book.author,
                     year: book.year,
-                    categoryId: book.categoryId,
+                    categoryId: book.category?._id,
                 } as BookType}
                 validationSchema={BookSchema}
                 onSubmit={(values) => {
@@ -83,7 +83,7 @@ const EditingBook: React.FC<PropsType> = props => {
                             ) : null}
                         </div>
 
-                        <button className="button button_primary" type="submit">Добавить новую книгу!</button>
+                        <button className="button button_primary" type="submit">Обновить книгу!</button>
                     </Form>
                 )}
             </Formik>

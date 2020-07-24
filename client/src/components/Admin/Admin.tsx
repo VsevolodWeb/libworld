@@ -52,7 +52,7 @@ const Admin: React.FC<PropsType> = props => {
             <Route path={`/admin/books/:id`}>
                 <Suspense fallback={<div>Загрузка</div>}>
                     <EditingBook readBook={props.readBookThunkCreator}
-                                 readBooks={props.readBooksThunkCreator}
+                                 readCategories={props.readCategoriesThunkCreator}
                                  updateBook={props.updateBookThunkCreator}
                                  categories={props.categories}/>
                 </Suspense>

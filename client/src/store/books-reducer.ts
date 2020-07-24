@@ -8,6 +8,7 @@ import {FormikErrors, FormikState} from 'formik'
 export type BookType = {
     _id?: string
     name: string
+    cover?: string
     description: string
     author: string
     categoryId?: string
