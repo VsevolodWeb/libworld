@@ -33,7 +33,7 @@ type PropsType = {
 }
 
 const Books: React.FC<PropsType> = props => {
-    const [cover, setCover] = useState<File | null>(null)
+    const [cover, setCover] = useState<string | null>(null)
     const readBooks = props.readBooks
     const readCategories = props.readCategories
 
@@ -47,7 +47,18 @@ const Books: React.FC<PropsType> = props => {
     }
 
     const onCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setCover(e.currentTarget.files && e.currentTarget.files[0])
+        const coverFile = e.currentTarget.files && e.currentTarget.files[0]
+
+        if (coverFile) {
+            const coverBlob = new Blob([coverFile])
+            const reader = new FileReader()
+
+            reader.onload = function (e) {
+                setCover(e.target && e.target.result as string)
+            }
+
+            reader.readAsDataURL(coverBlob)
+        }
     }
 
     return (
@@ -61,8 +72,7 @@ const Books: React.FC<PropsType> = props => {
                     } as BookType
                 }
                 onSubmit={(values, {setErrors, resetForm}) => {
-                    console.log(cover)
-                    props.createBook(values, setErrors, resetForm)
+                    props.createBook({...values, cover: cover!}, setErrors, resetForm)
                 }}
                 validationSchema={BookSchema}
                 enableReinitialize={true}
@@ -87,10 +97,17 @@ const Books: React.FC<PropsType> = props => {
                             ) : null}
                         </div>
                         <div className="formElement">
-                            <Field name="cover" type="file" className="formElement__element" onChange={onCoverChange}/>
+                            <button type="button" className="button button_link">
+                                <label htmlFor="book-cover">Прикрепить обложку</label>
+                            </button>
+                            {cover && <img src={cover as string} className={s.preview} alt="Ваша выбранная обложка"/>}
+
+                            <Field id="book-cover" name="cover" type="file" className="formElement__element"
+                                   onChange={onCoverChange} hidden/>
                             {errors.name && touched.name ? (
                                 <div className="formElement__hint">{errors.name}</div>
                             ) : null}
+
                         </div>
                         <div className="formElement">
                             <Field name="author" className="formElement__element" placeholder="Автор"/>

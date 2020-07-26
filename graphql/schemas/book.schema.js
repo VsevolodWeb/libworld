@@ -12,6 +12,7 @@ const types = `
 		_id: String
 		name: String!
 		description: String!
+		cover: String!
 		author: String!
 		categoryId: String!
 		year: Int!

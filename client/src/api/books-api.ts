@@ -5,7 +5,12 @@ export const booksAPI = {
     createBook(book: BookType) {
         const query = `
             mutation {
-              createBook(book: {name: "${book.name}", description: "${book.description}", author: "${book.author}", categoryId: "${book.categoryId}", year: ${book.year}}) {
+              createBook(book: {name: "${book.name}",
+                                description: "${book.description}",
+                                cover: "${book.cover}",
+                                author: "${book.author}",
+                                categoryId: "${book.categoryId}",
+                                year: ${book.year}}) {
                 _id
                 name
                 description
