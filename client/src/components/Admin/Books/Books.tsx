@@ -50,7 +50,7 @@ const Books: React.FC<PropsType> = props => {
         const coverFile = e.currentTarget.files && e.currentTarget.files[0]
 
         if (coverFile) {
-            const coverBlob = new Blob([coverFile])
+            const coverBlob = new Blob([coverFile], {type: 'image/jpeg'})
             const reader = new FileReader()
 
             reader.onload = function (e) {
