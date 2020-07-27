@@ -1,4 +1,5 @@
 {
-	"port": 5000,
-	"mongoURI": "mongodb+srv://vsevolod:1u2ZRWZg8Verm16S@clusterlibworld-9asug.mongodb.net/libworld?retryWrites=true&w=majority"
+  "serverUrl": "http://localhost",
+  "port": 5000,
+  "mongoURI": "mongodb+srv://vsevolod:1u2ZRWZg8Verm16S@clusterlibworld-9asug.mongodb.net/libworld?retryWrites=true&w=majority"
 }

@@ -3,6 +3,7 @@ const types = `
 		_id: String!
 		name: String!
 		description: String!
+		cover: String
 		author: String!
 		category: CategoryType!
 		year: Int!
@@ -12,7 +13,7 @@ const types = `
 		_id: String
 		name: String!
 		description: String!
-		cover: String!
+		cover: String
 		author: String!
 		categoryId: String!
 		year: Int!

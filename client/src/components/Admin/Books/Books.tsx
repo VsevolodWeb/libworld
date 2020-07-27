@@ -1,6 +1,7 @@
 import React, {ChangeEvent, useEffect, useState} from 'react'
 import {NavLink} from 'react-router-dom'
 import {Field, Form, Formik,} from 'formik'
+import config from '../../../config/default.config'
 import * as Yup from 'yup'
 import cn from 'classnames'
 import s from './Books.module.sass'
@@ -100,9 +101,10 @@ const Books: React.FC<PropsType> = props => {
                             <button type="button" className="button button_link">
                                 <label htmlFor="book-cover">Прикрепить обложку</label>
                             </button>
-                            {cover && <img src={cover as string} className={s.preview} alt="Ваша выбранная обложка"/>}
+                            {cover && <img src={cover} className={s.preview} alt="Ваша выбранная обложка"/>}
 
-                            <Field id="book-cover" name="cover" type="file" className="formElement__element"
+                            <Field id="book-cover" name="cover" type="file" accept="image/jpeg"
+                                   className="formElement__element"
                                    onChange={onCoverChange} hidden/>
                             {errors.name && touched.name ? (
                                 <div className="formElement__hint">{errors.name}</div>
@@ -137,19 +139,12 @@ const Books: React.FC<PropsType> = props => {
                 <table className={cn('table', s.table)}>
                     <thead>
                     <tr>
-                        <th>
-                            Название
-                        </th>
-                        <th>
-                            Описание
-                        </th>
+                        <th>Обложка</th>
+                        <th>Название</th>
+                        <th>Описание</th>
                         <th>Категория</th>
-                        <th>
-                            Автор
-                        </th>
-                        <th>
-                            Год
-                        </th>
+                        <th>Автор</th>
+                        <th>Год</th>
                         <th>Действия</th>
                     </tr>
                     </thead>
@@ -157,6 +152,13 @@ const Books: React.FC<PropsType> = props => {
                     {props.books.map((item) => (
                         <React.Fragment key={item._id}>
                             <tr>
+                                <td>
+                                    {item.cover ?
+                                        <img
+                                            src={`${config.booksImageFolderURL}/${item.cover}`}
+                                            className={s.table__image}
+                                            alt={item.name}/> : '—'}
+                                </td>
                                 <td>
                                     <NavLink to={`/admin/books/${item._id}`}
                                              className="link">{item.name}

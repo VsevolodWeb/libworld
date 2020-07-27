@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const config = require('config');
 const mongoose = require('mongoose');
 const graphqlHTTP = require('express-graphql');
@@ -8,9 +9,11 @@ const resolver = require("./graphql/resolver")
 
 const app = express()
 
+app.use(bodyParser.json({limit: '3mb', extended: true}))
 app.use(express.json({ extended: true }))
 app.use(cors())
 app.use(express.static('public'));
+
 app.use('/graphql', graphqlHTTP({
   schema: schema,
   rootValue: resolver,

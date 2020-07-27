@@ -4,10 +4,6 @@ const Book = require("../../models/Book")
 const {readCategory} = require("../resolvers/category.resolver")
 const decodeBase64Image = require("../../helpers/decodeBase64Image")
 
-const handleError = (error) => {
-	console.error(`Error ${error}\n${error.stack}`)
-}
-
 module.exports = {
 	async createBook({book}) {
 		try {
@@ -15,17 +11,26 @@ module.exports = {
 
 			if (!category) return new Error("Такой категории не существует")
 
-			const coverWrapper = decodeBase64Image(book.cover)
-			const coverURL = `books-images/${shortId.generate()}.jpg`
+			const coverName = `${shortId.generate()}.jpg`
 
 			const newBook = new Book({
-				...book, cover: coverURL, category
+				...book, cover: coverName, category
 			})
 
-			await newBook.save((err, book) => {
-				console.log(err, book)
-				return 2
-			})
+			let result = await newBook.save()
+
+			console.log(book.cover)
+
+			if (book.cover) {
+				const coverWrapper = decodeBase64Image(book.cover)
+
+				fs.writeFile(`public/books-images/${coverName}`, coverWrapper.data, (err) => {
+					if (err) throw err
+				})
+			}
+
+			return result
+
 		} catch (e) {
 			throw new Error(e)
 		}
