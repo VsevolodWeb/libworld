@@ -11,17 +11,19 @@ module.exports = {
 
 			if (!category) return new Error("Такой категории не существует")
 
+			const hasCover = () => {
+				return book.cover !== "null"
+			}
+
 			const coverName = `${shortId.generate()}.jpg`
 
 			const newBook = new Book({
-				...book, cover: coverName, category
+				...book, cover: hasCover() ? coverName : "", category
 			})
 
 			let result = await newBook.save()
 
-			console.log(book.cover)
-
-			if (book.cover) {
+			if (hasCover()) {
 				const coverWrapper = decodeBase64Image(book.cover)
 
 				fs.writeFile(`public/books-images/${coverName}`, coverWrapper.data, (err) => {

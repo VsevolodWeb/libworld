@@ -14,6 +14,7 @@ export const booksAPI = {
                 _id
                 name
                 description
+                cover
                 author
                 year
                 category {

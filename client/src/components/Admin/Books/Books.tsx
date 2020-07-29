@@ -73,6 +73,7 @@ const Books: React.FC<PropsType> = props => {
                     } as BookType
                 }
                 onSubmit={(values, {setErrors, resetForm}) => {
+                    setCover(null)
                     props.createBook({...values, cover: cover!}, setErrors, resetForm)
                 }}
                 validationSchema={BookSchema}
