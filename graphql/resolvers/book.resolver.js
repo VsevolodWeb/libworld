@@ -64,7 +64,13 @@ module.exports = {
 	},
 	async deleteBook({_id}) {
 		try {
-			await Book.findByIdAndRemove(_id)
+			await Book.findByIdAndDelete(_id, (err, res) => {
+				if(res && res.cover) {
+					fs.unlink(`public/books-images/${res.cover}`, (err) => {
+					  if (err) throw err;
+					});
+				}
+			})
 
 			return _id
 		} catch (e) {

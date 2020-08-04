@@ -50,6 +50,7 @@ export const booksAPI = {
                 _id
                 name
                 description
+                cover
                 author
                 year
                 category {
@@ -61,7 +62,6 @@ export const booksAPI = {
         return api<ApiType<'readBook', BookType>>(query)
     },
     updateBook(book: BookType) {
-        console.log(book)
         const query = `
             mutation {
                 updateBook(book: {_id: "${book._id}", name: "${book.name}", description: "${book.description}", author: "${book.author}", year: ${book.year}, categoryId: "${book.categoryId}"}) {

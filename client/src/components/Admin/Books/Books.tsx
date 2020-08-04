@@ -7,6 +7,7 @@ import cn from 'classnames'
 import s from './Books.module.sass'
 import {BookType, createBookThunkCreatorType} from '../../../store/books-reducer'
 import {CategoryType} from '../../../store/categories-reducer'
+import {OnCoverChangeType} from '../Admin'
 
 
 export const BookSchema = Yup.object().shape<BookType>({
@@ -29,6 +30,7 @@ type PropsType = {
     readBooks: () => void
     readCategories: () => void
     deleteBook: (_id: string) => void
+    onCoverChange: OnCoverChangeType
     books: BookType[]
     categories: CategoryType[]
 }
@@ -47,19 +49,10 @@ const Books: React.FC<PropsType> = props => {
         props.deleteBook(_id)
     }
 
-    const onCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const coverFile = e.currentTarget.files && e.currentTarget.files[0]
-
-        if (coverFile) {
-            const coverBlob = new Blob([coverFile], {type: 'image/jpeg'})
-            const reader = new FileReader()
-
-            reader.onload = function (e) {
-                setCover(e.target && e.target.result as string)
-            }
-
-            reader.readAsDataURL(coverBlob)
-        }
+    const onCoverChange = (changeEvent: ChangeEvent<HTMLInputElement>) => {
+        props.onCoverChange(changeEvent, readerEvent => {
+            setCover(readerEvent.target && readerEvent.target.result as string)
+        })
     }
 
     return (
@@ -107,8 +100,8 @@ const Books: React.FC<PropsType> = props => {
                             <Field id="book-cover" name="cover" type="file" accept="image/jpeg"
                                    className="formElement__element"
                                    onChange={onCoverChange} hidden/>
-                            {errors.name && touched.name ? (
-                                <div className="formElement__hint">{errors.name}</div>
+                            {errors.cover && touched.cover ? (
+                                <div className="formElement__hint">{errors.cover}</div>
                             ) : null}
 
                         </div>

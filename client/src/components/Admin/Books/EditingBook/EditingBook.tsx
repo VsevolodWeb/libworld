@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {ChangeEvent, useEffect, useState} from 'react'
 import {useParams, Redirect} from 'react-router-dom'
 import {Field, Form, Formik} from 'formik'
 import cn from 'classnames'
@@ -6,18 +6,21 @@ import {CategoryOutputType} from '../../../../store/categories-reducer'
 import {BookSchema} from '../Books'
 import s from './EditingBook.module.sass'
 import {BookType} from '../../../../store/books-reducer'
+import {OnCoverChangeType} from '../../Admin'
 
 
 type PropsType = {
     readCategories: () => void
     readBook: (id: string) => Promise<any>
     updateBook: (book: BookType) => void
+    onCoverChange: OnCoverChangeType
     categories: CategoryOutputType[]
 }
 
 const EditingBook: React.FC<PropsType> = props => {
     const {id} = useParams()
     const [book, setBook] = useState<BookType | null>(null)
+    const [cover, setCover] = useState<string | null>(null)
     const [isRedirect, setIsRedirect] = useState<boolean>(false)
     const readCategories = props.readCategories
     const readBook = props.readBook
@@ -28,6 +31,16 @@ const EditingBook: React.FC<PropsType> = props => {
             setBook(response)
         })
     }, [readCategories, readBook, id])
+
+    const onCoverChange = (changeEvent: ChangeEvent<HTMLInputElement>) => {
+        props.onCoverChange(changeEvent, readerEvent => {
+            setCover(readerEvent.target && readerEvent.target.result as string)
+        })
+    }
+
+    const getCover = (coverFromProps?: string): string | null => {
+        return coverFromProps || cover
+    }
 
     return isRedirect ? <Redirect to={'/admin/books'}/> : <>
         {book && (
@@ -62,6 +75,20 @@ const EditingBook: React.FC<PropsType> = props => {
                             {errors.name && touched.name ? (
                                 <div className="formElement__hint">{errors.name}</div>
                             ) : null}
+                        </div>
+                        <div className="formElement">
+                            <button type="button" className="button button_link">
+                                <label htmlFor="book-cover">Прикрепить обложку</label>
+                            </button>
+                            {getCover(book?.cover) && <img src={getCover(book?.cover) as string} className={s.preview} alt="Ваша выбранная обложка"/>}
+
+                            <Field id="book-cover" name="cover" type="file" accept="image/jpeg"
+                                   className="formElement__element"
+                                   onChange={onCoverChange} hidden/>
+                            {errors.cover && touched.cover ? (
+                                <div className="formElement__hint">{errors.cover}</div>
+                            ) : null}
+
                         </div>
                         <div className="formElement">
                             <Field name="author" className="formElement__element" placeholder="Автор"/>
