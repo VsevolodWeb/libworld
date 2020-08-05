@@ -51,11 +51,28 @@ module.exports = {
 			throw new Error(e)
 		}
 	},
-	async updateBook({book: {_id, name, description, author, year, categoryId}}) {
+	async updateBook({book: {_id, name, description, cover, author, year, categoryId}}) {
 		try {
+			const resultBook = {_id, name, description, author, year, category: categoryId}
+
+			if(cover !== 'null') {
+				const coverName = shortId.generate() + '.jpg'
+				const coverWrapper = decodeBase64Image(cover)
+
+				resultBook.cover = coverName
+
+				fs.writeFile(`public/books-images/${coverName}`, coverWrapper.data, (err) => {
+					if (err) throw err
+				})
+
+				// fs.unlink(`public/books-images/${cover}`, (err) => {
+				//   if (err) throw err;
+				// });
+			}
+
 			return await Book.findByIdAndUpdate(
 				_id,
-				{$set: {_id, name, description, author, year, category: categoryId}},
+				{$set: resultBook},
 				{new: true}
 			)
 		} catch (e) {

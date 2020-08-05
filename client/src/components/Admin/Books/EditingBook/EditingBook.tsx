@@ -7,6 +7,7 @@ import {BookSchema} from '../Books'
 import s from './EditingBook.module.sass'
 import {BookType} from '../../../../store/books-reducer'
 import {OnCoverChangeType} from '../../Admin'
+import clientConfig from '../../../../config/default.config'
 
 
 type PropsType = {
@@ -38,10 +39,6 @@ const EditingBook: React.FC<PropsType> = props => {
         })
     }
 
-    const getCover = (coverFromProps?: string): string | null => {
-        return coverFromProps || cover
-    }
-
     return isRedirect ? <Redirect to={'/admin/books'}/> : <>
         {book && (
             <Formik
@@ -54,7 +51,7 @@ const EditingBook: React.FC<PropsType> = props => {
                 } as BookType}
                 validationSchema={BookSchema}
                 onSubmit={(values) => {
-                    props.updateBook({...values, _id: id})
+                    props.updateBook({...values, _id: id, cover: cover!})
                     setIsRedirect(true)
                 }}>
                 {({errors, touched}) => (
@@ -80,7 +77,8 @@ const EditingBook: React.FC<PropsType> = props => {
                             <button type="button" className="button button_link">
                                 <label htmlFor="book-cover">Прикрепить обложку</label>
                             </button>
-                            {getCover(book?.cover) && <img src={getCover(book?.cover) as string} className={s.preview} alt="Ваша выбранная обложка"/>}
+
+                            {(cover || book?.cover) && <img src={cover ? cover : clientConfig.booksImageFolderURL + book?.cover} className={s.preview} alt="Ваша выбранная обложка"/>}
 
                             <Field id="book-cover" name="cover" type="file" accept="image/jpeg"
                                    className="formElement__element"

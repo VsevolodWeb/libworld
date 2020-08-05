@@ -1,7 +1,7 @@
 class clientConfig {
   constructor() {
     this.serverUrl = 'http://localhost:5000'
-    this.booksImageFolderURL = this.serverUrl + '/books-images'
+    this.booksImageFolderURL = this.serverUrl + '/books-images/'
   }
 }
 
