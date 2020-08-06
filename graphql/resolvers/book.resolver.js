@@ -70,11 +70,20 @@ module.exports = {
 				// });
 			}
 
-			return await Book.findByIdAndUpdate(
+			const a = await Book.findById(
 				_id,
-				{$set: resultBook},
-				{new: true}
+				(err, doc) => {
+					if(err) throw err
+
+					doc.name = resultBook.name
+
+					doc.save()
+				}
 			)
+
+			console.log(a)
+
+			return a
 		} catch (e) {
 			throw new Error(e)
 		}
