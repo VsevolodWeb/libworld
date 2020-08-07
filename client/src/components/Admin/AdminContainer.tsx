@@ -35,7 +35,7 @@ type MapDispatchToProps = {
     createBookThunkCreator: createBookThunkCreatorType
     readBooksThunkCreator: () => void
     readBookThunkCreator: (_id: string) => Promise<any>
-    updateBookThunkCreator: (book: BookType) => void
+    updateBookThunkCreator: (book: BookType) => Promise<any>
     deleteBookThunkCreator: (_id: string) => void
 }
 type OwnProps = {}

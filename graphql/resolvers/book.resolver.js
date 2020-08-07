@@ -70,20 +70,20 @@ module.exports = {
 				// });
 			}
 
-			const a = await Book.findById(
+			let resultPromise
+
+			await Book.findById(
 				_id,
-				(err, doc) => {
+				async (err, doc) => {
 					if(err) throw err
 
 					doc.name = resultBook.name
 
-					doc.save()
+					resultPromise = doc.save()
 				}
 			)
 
-			console.log(a)
-
-			return a
+			return await resultPromise
 		} catch (e) {
 			throw new Error(e)
 		}

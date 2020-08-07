@@ -149,7 +149,7 @@ const Books: React.FC<PropsType> = props => {
                                 <td>
                                     {item.cover ?
                                         <img
-                                            src={`${config.booksImageFolderURL}/${item.cover}`}
+                                            src={`${config.getBookImageFolderURL()}/${item.cover}`}
                                             className={s.table__image}
                                             alt={item.name}/> : '—'}
                                 </td>

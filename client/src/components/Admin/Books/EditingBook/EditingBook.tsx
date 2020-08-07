@@ -13,7 +13,7 @@ import clientConfig from '../../../../config/default.config'
 type PropsType = {
     readCategories: () => void
     readBook: (id: string) => Promise<any>
-    updateBook: (book: BookType) => void
+    updateBook: (book: BookType) => Promise<any>
     onCoverChange: OnCoverChangeType
     categories: CategoryOutputType[]
 }
@@ -50,8 +50,8 @@ const EditingBook: React.FC<PropsType> = props => {
                     categoryId: book.category?._id,
                 } as BookType}
                 validationSchema={BookSchema}
-                onSubmit={(values) => {
-                    props.updateBook({...values, _id: id, cover: cover!})
+                onSubmit={async (values) => {
+                    await props.updateBook({...values, _id: id, cover: cover!})
                     setIsRedirect(true)
                 }}>
                 {({errors, touched}) => (
@@ -78,7 +78,7 @@ const EditingBook: React.FC<PropsType> = props => {
                                 <label htmlFor="book-cover">Прикрепить обложку</label>
                             </button>
 
-                            {(cover || book?.cover) && <img src={cover ? cover : clientConfig.booksImageFolderURL + book?.cover} className={s.preview} alt="Ваша выбранная обложка"/>}
+                            {(cover || book?.cover) && <img src={cover ? cover : clientConfig.getBookImageFolderURL() + book?.cover} className={s.preview} alt="Ваша выбранная обложка"/>}
 
                             <Field id="book-cover" name="cover" type="file" accept="image/jpeg"
                                    className="formElement__element"
