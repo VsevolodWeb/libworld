@@ -55,7 +55,7 @@ module.exports = {
 		try {
 			const resultBook = {_id, name, description, author, year, category: categoryId}
 
-			if(cover !== 'null') {
+			if (cover !== 'null') {
 				const coverName = shortId.generate() + '.jpg'
 				const coverWrapper = decodeBase64Image(cover)
 
@@ -64,10 +64,6 @@ module.exports = {
 				fs.writeFile(`public/books-images/${coverName}`, coverWrapper.data, (err) => {
 					if (err) throw err
 				})
-
-				// fs.unlink(`public/books-images/${cover}`, (err) => {
-				//   if (err) throw err;
-				// });
 			}
 
 			let resultPromise
@@ -75,9 +71,17 @@ module.exports = {
 			await Book.findById(
 				_id,
 				async (err, doc) => {
-					if(err) throw err
+					if (err) throw err
 
-					doc.name = resultBook.name
+					if (resultBook.cover) {
+						fs.unlink(`public/books-images/${doc.cover}`, (err) => {
+						  if (err) throw err;
+						});
+					}
+
+					for (let key in resultBook) {
+						doc[key] = resultBook[key]
+					}
 
 					resultPromise = doc.save()
 				}
@@ -85,16 +89,16 @@ module.exports = {
 
 			return await resultPromise
 		} catch (e) {
-			throw new Error(e)
+			console.log(e)
 		}
 	},
 	async deleteBook({_id}) {
 		try {
 			await Book.findByIdAndDelete(_id, (err, res) => {
-				if(res && res.cover) {
+				if (res && res.cover) {
 					fs.unlink(`public/books-images/${res.cover}`, (err) => {
-					  if (err) throw err;
-					});
+						if (err) throw err
+					})
 				}
 			})
 
