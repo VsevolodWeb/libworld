@@ -1,4 +1,5 @@
 const Category = require('../../models/Category')
+const Book = require('../../models/Book')
 const buildAncestors = require('../../helpers/buildAncestors')
 const buildHierarchyAncestors = require('../../helpers/buildHierarchyAncestors')
 
@@ -45,13 +46,15 @@ module.exports = {
 		try {
 			const removedCategory = await Category.findByIdAndRemove(id)
 
+			await Book.deleteMany({'category': id})
+
 			if (!removedCategory.parentId) {
-				await Category.deleteMany({"ancestors._id": id})
+				await Category.deleteMany({'ancestors.id': id})
 			}
 
 			return id
 		} catch (e) {
-			return new Error(e)
+			console.log(e)
 		}
 	}
 }

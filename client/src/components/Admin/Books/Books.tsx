@@ -129,7 +129,7 @@ const Books: React.FC<PropsType> = props => {
                     </Form>
                 )}
             </Formik>
-            {props.categories.length ?
+            {props.books.length ?
                 <table className={cn('table', s.table)}>
                     <thead>
                     <tr>
