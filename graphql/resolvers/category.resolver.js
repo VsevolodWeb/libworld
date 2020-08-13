@@ -5,7 +5,7 @@ const buildHierarchyAncestors = require('../../helpers/buildHierarchyAncestors')
 
 module.exports = {
 	async createCategory({category: {name, description, parentId}}) {
-		const parentIdValue = parentId ? parentId : null;
+		const parentIdValue = parentId ? parentId : null
 		const category = new Category({name, description, parentId})
 
 		try {
@@ -33,9 +33,9 @@ module.exports = {
 	},
 	async updateCategory({category: {_id, name, description, parentId}}) {
 		try {
-			const category = await Category.findByIdAndUpdate(_id, {$set: {name, description, parentId}}, {new: true});
+			const category = await Category.findByIdAndUpdate(_id, {$set: {name, description, parentId}}, {new: true})
 
-			await buildHierarchyAncestors(_id, parentId);
+			await buildHierarchyAncestors(_id, parentId)
 
 			return category
 		} catch (e) {
@@ -49,7 +49,11 @@ module.exports = {
 			await Book.deleteMany({'category': id})
 
 			if (!removedCategory.parentId) {
-				await Category.deleteMany({'ancestors.id': id})
+				let ancestors = (await Category.find({'ancestors._id': id}))
+					.map(item => item._id)
+
+				await Category.deleteMany({'ancestors._id': id})
+				await Book.deleteMany({'category': ancestors})
 			}
 
 			return id
