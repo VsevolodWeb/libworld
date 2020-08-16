@@ -9,6 +9,7 @@ export type BookType = {
     _id?: string
     name: string
     cover?: string
+    text?: string
     description: string
     author: string
     categoryId?: string

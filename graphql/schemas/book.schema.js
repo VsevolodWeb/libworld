@@ -1,8 +1,11 @@
 const types = `
+	scalar Upload
+
 	type BookType {
 		_id: String!
 		name: String!
 		description: String!
+		text: String
 		cover: String
 		author: String!
 		category: CategoryType!
@@ -13,7 +16,8 @@ const types = `
 		_id: String
 		name: String!
 		description: String!
-		cover: String
+		text: String
+		cover: Upload
 		author: String!
 		categoryId: String!
 		year: Int!

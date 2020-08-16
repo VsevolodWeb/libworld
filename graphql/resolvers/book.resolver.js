@@ -5,33 +5,47 @@ const {readCategory} = require("../resolvers/category.resolver")
 const decodeBase64Image = require("../../helpers/decodeBase64Image")
 
 module.exports = {
-	async createBook({book}) {
+	async createBook({book}, {file}) {
 		try {
-			const category = await readCategory({id: book.categoryId})
 
-			if (!category) return new Error("Такой категории не существует")
+			const { stream, mimetype } = await file;
 
-			const hasCover = () => {
-				return book.cover !== "null"
-			}
+			console.log(stream, mimetype)
 
-			const coverName = `${shortId.generate()}.jpg`
 
-			const newBook = new Book({
-				...book, cover: hasCover() ? coverName : "", category
-			})
-
-			let result = await newBook.save()
-
-			if (hasCover()) {
-				const coverWrapper = decodeBase64Image(book.cover)
-
-				fs.writeFile(`public/books-images/${coverName}`, coverWrapper.data, (err) => {
-					if (err) throw err
-				})
-			}
-
-			return result
+			// const category = await readCategory({id: book.categoryId})
+			//
+			// if (!category) return new Error("Такой категории не существует")
+			//
+			// const hasCover = () => {
+			// 	return book.cover !== "null"
+			// }
+			//
+			// const coverName = `${shortId.generate()}.jpg`
+			// const textName = `${shortId.generate()}.txt`
+			//
+			// const newBook = new Book({
+			// 	...book,
+			// 	cover: hasCover() ? coverName : "",
+			// 	text: textName,
+			// 	category
+			// })
+			//
+			// let result = await newBook.save()
+			//
+			// if (hasCover()) {
+			// 	const coverWrapper = decodeBase64Image(book.cover)
+			//
+			// 	fs.writeFile(`public/books-images/${coverName}`, coverWrapper.data, (err) => {
+			// 		if (err) throw err
+			// 	})
+			// }
+			//
+			// fs.writeFile(`public/books/${textName}`, coverWrapper.data, (err) => {
+			// 		if (err) throw err
+			// 	})
+			//
+			// return result
 
 		} catch (e) {
 			throw new Error(e)

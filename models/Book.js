@@ -4,7 +4,7 @@ const schema = new Schema({
 	name: {type: String, required: true, unique: true},
 	description: String,
 	cover: String,
-	//text: {type: String, required: true, unique: true}, //?
+	text: {type: String, required: true, unique: true},
 	author: String,
 	category: {type: Schema.ObjectId, ref: 'Category'},
 	year: Number

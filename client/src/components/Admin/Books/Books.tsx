@@ -21,7 +21,8 @@ export const BookSchema = Yup.object().shape<BookType>({
     author: Yup.string()
         .required('Обязательно для заполнения'),
     categoryId: Yup.string().optional(),
-    year: Yup.number().required('Обязательно для заполнения')
+    year: Yup.number().required('Обязательно для заполнения'),
+    text: Yup.mixed<string>().required('Обязательно прикрепите файл с txt книгой')
 })
 
 
@@ -106,11 +107,17 @@ const Books: React.FC<PropsType> = props => {
                             </button>
                             {cover && <img src={cover} className={s.preview} alt="Ваша выбранная обложка"/>}
 
-                            <Field id="book-cover" name="cover" type="file" accept="image/jpeg"
-                                   className="formElement__element"
-                                   onChange={onCoverChange} hidden/>
+                            <Field id="book-cover" name="cover" type="file" accept="image/jpeg" onChange={onCoverChange} hidden/>
                             {errors.cover && touched.cover ? (
                                 <div className="formElement__hint">{errors.cover}</div>
+                            ) : null}
+
+                        </div>
+                        <div className="formElement">
+                            <Field id="book-cover" name="text" type="file" accept="text/plain"
+                                   className="formElement__element"/>
+                            {errors.text && touched.text ? (
+                                <div className="formElement__hint">{errors.text}</div>
                             ) : null}
 
                         </div>

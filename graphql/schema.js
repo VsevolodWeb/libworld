@@ -15,4 +15,4 @@ module.exports = buildSchema(`
 		${category.query}
 		${book.query}
 	}
-`)
+`, {})
