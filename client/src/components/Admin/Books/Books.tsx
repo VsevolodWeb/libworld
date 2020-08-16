@@ -45,7 +45,7 @@ const Books: React.FC<PropsType> = props => {
         readCategories()
     }, [readBooks, readCategories])
 
-    const removeBook = (_id: string) => {
+    const deleteBook = (_id: string) => {
         props.deleteBook(_id)
     }
 
@@ -81,7 +81,16 @@ const Books: React.FC<PropsType> = props => {
                                 as="select"
                             >
                                 {props.categories.map(item => {
-                                    return <option key={item._id} value={item._id}>{item.name}</option>
+                                    const option = <option key={item._id} value={item._id}>{item.name}</option>
+
+                                    if (item.subcategories) {
+                                        return [option,
+                                                ...item.subcategories
+                                                    .map(item => <option key={item._id} value={item._id}>--- {item.name}</option>)
+                                        ]
+                                    }
+
+                                    return option
                                 })}
                             </Field>
                         </div>
@@ -164,7 +173,7 @@ const Books: React.FC<PropsType> = props => {
                                 <td>{item.year}</td>
                                 <td>
                                     <button className="button button_sm button_secondary"
-                                            onClick={() => removeBook(item._id!)}>
+                                            onClick={() => deleteBook(item._id!)}>
                                         Удалить
                                     </button>
                                 </td>

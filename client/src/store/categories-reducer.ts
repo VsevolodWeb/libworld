@@ -10,6 +10,7 @@ export type CategoryType = {
     parentId?: string | null
     name: string
     description: string
+    subcategories?: Array<CategoryType>
 }
 
 export type CategoryOutputType = CategoryType & {
