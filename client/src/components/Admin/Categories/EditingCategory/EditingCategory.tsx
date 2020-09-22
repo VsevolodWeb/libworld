@@ -2,9 +2,14 @@ import React, {useEffect, useState} from "react"
 import {useParams, Redirect} from "react-router-dom"
 import {Field, Form, Formik} from "formik"
 import cn from "classnames"
-import {CategoryOutputType, CategoryType} from "../../../../store/categories-reducer"
+import {CategoryOutputType, CategoryType, readCategoryThunkCreator} from '../../../../store/categories-reducer'
 import {CategorySchema} from "../Categories"
 import s from "./EditingCategory.module.sass"
+import {useDispatch, useSelector} from 'react-redux'
+import {ThunkDispatch} from 'redux-thunk'
+import {AppStateType} from '../../../../store/store'
+import {AnyAction} from 'redux'
+import {getCategories} from '../../../../store/categories-selectors'
 
 
 type PropsType = {
@@ -15,18 +20,17 @@ type PropsType = {
 }
 
 const EditingCategory: React.FC<PropsType> = props => {
+    const categories = useSelector(getCategories)
+	const dispatch: ThunkDispatch<AppStateType, any, AnyAction> = useDispatch()
     const {id} = useParams()
     const [category, setCategory] = useState<CategoryType | null>(null)
     const [isRedirect, setIsRedirect] = useState<boolean>(false)
-    const readCategories = props.readCategories
-    const readCategory = props.readCategory
 
     useEffect(() => {
-        readCategories()
-        readCategory(id).then(response => {
-            setCategory(response)
+	    dispatch(readCategoryThunkCreator(id)).then(response => {
+            setCategory(response!)
         })
-    }, [readCategories, readCategory, id])
+    }, [dispatch, id])
 
     return isRedirect ? <Redirect to={"/admin/categories"}/> : <>
         {category && (
@@ -50,7 +54,7 @@ const EditingCategory: React.FC<PropsType> = props => {
                                 as="select"
                             >
                                 <option value="">Без категории</option>
-                                {props.categories.map(item => {
+                                {categories.map(item => {
                                     return <option key={item._id} value={item._id}>{item.name}</option>
                                 })}
                             </Field>
