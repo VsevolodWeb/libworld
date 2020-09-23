@@ -6,7 +6,7 @@ import "./styles/styles.sass"
 import store from "./store/store"
 import Header from "./components/partials/Header/Header";
 import Book from './components/Site/Book/Book'
-const Admin = React.lazy(() => import('./components/Admin/AdminContainer'));
+const Admin = React.lazy(() => import('./components/Admin/Admin'));
 
 
 const App = () => (

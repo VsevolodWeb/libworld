@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from "react"
-import {useParams, Redirect} from "react-router-dom"
-import {Field, Form, Formik} from "formik"
-import cn from "classnames"
-import {CategoryOutputType, CategoryType, readCategoryThunkCreator} from '../../../../store/categories-reducer'
-import {CategorySchema} from "../Categories"
-import s from "./EditingCategory.module.sass"
+import React, {useEffect, useState} from 'react'
+import {Redirect, useParams} from 'react-router-dom'
+import {Field, Form, Formik} from 'formik'
+import cn from 'classnames'
+import {CategoryType, readCategoryThunkCreator, updateCategoryThunkCreator} from '../../../../store/categories-reducer'
+import {CategorySchema} from '../Categories'
+import s from './EditingCategory.module.sass'
 import {useDispatch, useSelector} from 'react-redux'
 import {ThunkDispatch} from 'redux-thunk'
 import {AppStateType} from '../../../../store/store'
@@ -12,14 +12,7 @@ import {AnyAction} from 'redux'
 import {getCategories} from '../../../../store/categories-selectors'
 
 
-type PropsType = {
-    readCategories: () => void
-    readCategory: (id: string) => Promise<CategoryType>
-    updateCategory: (category: CategoryType) => void
-    categories: CategoryOutputType[]
-}
-
-const EditingCategory: React.FC<PropsType> = props => {
+function EditingCategory() {
     const categories = useSelector(getCategories)
 	const dispatch: ThunkDispatch<AppStateType, any, AnyAction> = useDispatch()
     const {id} = useParams()
@@ -41,8 +34,8 @@ const EditingCategory: React.FC<PropsType> = props => {
                     parentId: category?.parentId
                 }}
                 validationSchema={CategorySchema}
-                onSubmit={(values) => {
-                    props.updateCategory({...values, _id: id})
+                onSubmit={async (values) => {
+                    await dispatch(updateCategoryThunkCreator({...values, _id: id}))
                     setIsRedirect(true)
                 }}>
                 {({errors, touched}) => (

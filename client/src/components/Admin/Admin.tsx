@@ -5,13 +5,12 @@ import Categories from './Categories/Categories'
 import EditingCategory from './Categories/EditingCategory/EditingCategory'
 import Books from './Books/Books'
 import EditingBook from './Books/EditingBook/EditingBook'
-import {PropsType} from './AdminContainer'
 import s from './Admin.module.sass'
 
 export type OnCoverChangeType = (e: ChangeEvent<HTMLInputElement>, readerOnLoad: (e: ProgressEvent<FileReader>) => void) => void
 
 
-const Admin: React.FC<PropsType> = props => {
+function Admin() {
 	const onCoverChange: OnCoverChangeType = (e, readerOnLoad) => {
 		const coverFile = e.currentTarget.files && e.currentTarget.files[0]
 
@@ -45,33 +44,17 @@ const Admin: React.FC<PropsType> = props => {
 				</Route>
 				<Route path="/admin/categories/:id">
 					<Suspense fallback={<div>Загрузка</div>}>
-						<EditingCategory readCategories={props.readCategoriesThunkCreator}
-						                 readCategory={props.readCategoryThunkCreator}
-						                 updateCategory={props.updateCategoryThunkCreator}
-						                 categories={props.categories}
-						/>
+						<EditingCategory/>
 					</Suspense>
 				</Route>
 				<Route exact path="/admin/books">
 					<Suspense fallback={<div>Загрузка</div>}>
-						<Books readBooks={props.readBooksThunkCreator}
-						       readCategories={props.readCategoriesThunkCreator}
-						       deleteBook={props.deleteBookThunkCreator}
-						       createBook={props.createBookThunkCreator}
-						       onCoverChange={onCoverChange}
-						       books={props.books}
-						       categories={props.categories}
-						/>
+						<Books onCoverChange={onCoverChange}/>
 					</Suspense>
 				</Route>
 				<Route path="/admin/books/:id">
 					<Suspense fallback={<div>Загрузка</div>}>
-						<EditingBook readBook={props.readBookThunkCreator}
-						             readCategories={props.readCategoriesThunkCreator}
-						             updateBook={props.updateBookThunkCreator}
-						             onCoverChange={onCoverChange}
-						             categories={props.categories}
-						/>
+						<EditingBook onCoverChange={onCoverChange}/>
 					</Suspense>
 				</Route>
 			</Switch>

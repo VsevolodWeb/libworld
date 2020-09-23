@@ -1,37 +1,38 @@
 import React, {ChangeEvent, useEffect, useState} from 'react'
-import {useParams, Redirect} from 'react-router-dom'
+import {Redirect, useParams} from 'react-router-dom'
 import {Field, Form, Formik} from 'formik'
 import cn from 'classnames'
-import {CategoryOutputType} from '../../../../store/categories-reducer'
+import {readCategoriesThunkCreator} from '../../../../store/categories-reducer'
 import {BookSchema} from '../Books'
 import s from './EditingBook.module.sass'
-import {BookType} from '../../../../store/books-reducer'
+import {BookType, readBookThunkCreator, updateBookThunkCreator} from '../../../../store/books-reducer'
 import {OnCoverChangeType} from '../../Admin'
 import clientConfig from '../../../../config/default.config'
+import {useDispatch, useSelector} from 'react-redux'
+import {ThunkDispatch} from 'redux-thunk'
+import {AppStateType} from '../../../../store/store'
+import {AnyAction} from 'redux'
+import {getCategories} from '../../../../store/categories-selectors'
 
 
 type PropsType = {
-    readCategories: () => void
-    readBook: (id: string) => Promise<any>
-    updateBook: (book: BookType) => Promise<any>
     onCoverChange: OnCoverChangeType
-    categories: CategoryOutputType[]
 }
 
 const EditingBook: React.FC<PropsType> = props => {
+    const categories = useSelector(getCategories)
+    const dispatch: ThunkDispatch<AppStateType, any, AnyAction> = useDispatch()
     const {id} = useParams()
     const [book, setBook] = useState<BookType | null>(null)
     const [cover, setCover] = useState<string | null>(null)
     const [isRedirect, setIsRedirect] = useState<boolean>(false)
-    const readCategories = props.readCategories
-    const readBook = props.readBook
 
     useEffect(() => {
-        readCategories()
-        readBook(id).then(response => {
-            setBook(response)
+        dispatch(readCategoriesThunkCreator()).then(r => r)
+        dispatch(readBookThunkCreator(id)).then(response => {
+            setBook(response!)
         })
-    }, [readCategories, readBook, id])
+    }, [dispatch, id])
 
     const onCoverChange = (changeEvent: ChangeEvent<HTMLInputElement>) => {
         props.onCoverChange(changeEvent, readerEvent => {
@@ -51,7 +52,7 @@ const EditingBook: React.FC<PropsType> = props => {
                 } as BookType}
                 validationSchema={BookSchema}
                 onSubmit={async (values) => {
-                    await props.updateBook({...values, _id: id, cover: cover!})
+                    await dispatch(updateBookThunkCreator({...values, _id: id, cover: cover!}))
                     setIsRedirect(true)
                 }}>
                 {({errors, touched}) => (
@@ -62,7 +63,7 @@ const EditingBook: React.FC<PropsType> = props => {
                                 className="formElement__element"
                                 as="select"
                             >
-                                {props.categories.map(item => {
+                                {categories.map(item => {
                                     return <option key={item._id} value={item._id}>{item.name}</option>
                                 })}
                             </Field>
@@ -108,7 +109,7 @@ const EditingBook: React.FC<PropsType> = props => {
                             ) : null}
                         </div>
 
-                        <button className="button button_primary" type="submit">Обновить книгу!</button>
+                        <button className="button button_primary" type="submit">Обновить книгу</button>
                     </Form>
                 )}
             </Formik>
