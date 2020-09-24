@@ -30,7 +30,7 @@ export const BookSchema = Yup.object().shape<BookType>({
 		.required('Обязательно для заполнения'),
 	categoryId: Yup.string().optional(),
 	year: Yup.number().required('Обязательно для заполнения'),
-	text: Yup.mixed<string>().required('Обязательно прикрепите файл с txt книгой')
+	text: Yup.mixed<FormData>().required('Обязательно прикрепите файл с txt книгой')
 })
 
 
@@ -65,8 +65,9 @@ const Books: React.FC<PropsType> = props => {
 			<Formik
 				initialValues={
 					{
-						name: '', cover: '', description: '', author: '', year: '',
-						categoryId: categories[0] ? categories[0]._id : ''
+						name: '2222222', cover: '', description: '33333', author: '444', year: 2222,
+						categoryId: categories[0] ? categories[0]._id : '',
+						text: new FormData()
 					} as BookType
 				}
 				onSubmit={(values, {setErrors, resetForm}) => {

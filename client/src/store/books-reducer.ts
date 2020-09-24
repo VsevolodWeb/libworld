@@ -9,7 +9,7 @@ export type BookType = {
     _id?: string
     name: string
     cover?: string
-    text?: string
+    text: FormData
     description: string
     author: string
     categoryId?: string
@@ -68,7 +68,9 @@ export const actions = {
 export type createBookThunkCreatorType = (book: BookType, setErrors: (errors: FormikErrors<BookType>) => void, resetForm: (nextState?: Partial<FormikState<BookType>>) => void) => void
 export const createBookThunkCreator: createBookThunkCreatorType = (book, setErrors, resetForm) => async (dispatch: Dispatch<ActionsTypes>) => {
     try {
-        const newBook = await booksAPI.createBook(book)
+        const text = new FormData()
+        text.append('text', book.text, `${book._id}.txt`)
+        const newBook = await booksAPI.createBook({...book, text})
 
         if (!newBook.errors) {
             dispatch(actions.createBook({...newBook.data.createBook}))

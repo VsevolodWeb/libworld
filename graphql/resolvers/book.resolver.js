@@ -7,7 +7,7 @@ const decodeBase64Image = require("../../helpers/decodeBase64Image")
 module.exports = {
 	async createBook({book}, {file}) {
 		try {
-
+			console.log(file)
 			const { stream, mimetype } = await file;
 
 			console.log(stream, mimetype)
