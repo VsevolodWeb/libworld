@@ -1,8 +1,9 @@
 import api, {ApiType} from './api'
 import {BookType} from '../store/books-reducer'
+import {Override} from '../store/store'
 
 export const booksAPI = {
-    createBook(book: BookType) {
+    createBook(book: Override<BookType, { text: FormData }>) {
         const query = `
             mutation {
               createBook(book: {name: "${book.name}",

@@ -12,6 +12,7 @@ const rootReducer = combineReducers({
 type RootReducerType = typeof rootReducer;
 export type AppStateType = ReturnType<RootReducerType>
 export type InferActionsTypes<T> = T extends {[key: string]: (...args: any[]) => infer U} ? U : never
+export type Override<T1, T2> = Omit<T1, keyof T2> & T2;
 
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 

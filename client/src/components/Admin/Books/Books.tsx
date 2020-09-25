@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useState} from 'react'
+import React, {ChangeEvent, SyntheticEvent, useEffect, useState} from 'react'
 import {NavLink} from 'react-router-dom'
 import {Field, Form, Formik,} from 'formik'
 import config from '../../../config/default.config'
@@ -30,7 +30,7 @@ export const BookSchema = Yup.object().shape<BookType>({
 		.required('Обязательно для заполнения'),
 	categoryId: Yup.string().optional(),
 	year: Yup.number().required('Обязательно для заполнения'),
-	text: Yup.mixed<FormData>().required('Обязательно прикрепите файл с txt книгой')
+	text: Yup.mixed<File>()
 })
 
 
@@ -43,6 +43,7 @@ const Books: React.FC<PropsType> = props => {
 	const books = useSelector(getBooks)
 	const dispatch = useDispatch()
 	const [cover, setCover] = useState<string | null>(null)
+	const [textFile, setTextFile] = useState<File | null>(null)
 
 	useEffect(() => {
 		dispatch(readBooksThunkCreator())
@@ -66,16 +67,15 @@ const Books: React.FC<PropsType> = props => {
 				initialValues={
 					{
 						name: '2222222', cover: '', description: '33333', author: '444', year: 2222,
-						categoryId: categories[0] ? categories[0]._id : '',
-						text: new FormData()
+						categoryId: categories[0] ? categories[0]._id : ''
 					} as BookType
 				}
 				onSubmit={(values, {setErrors, resetForm}) => {
 					setCover(null)
-					dispatch(createBookThunkCreator({...values, cover: cover!}, setErrors, resetForm))
+					dispatch(createBookThunkCreator({...values, cover: cover!, text: textFile}, setErrors, resetForm))
 				}}
-				validationSchema={BookSchema}
 				enableReinitialize={true}
+				validationSchema={BookSchema}
 			>
 				{({errors, touched}) => (
 					<Form className={cn('form', s.form)}>
@@ -120,8 +120,9 @@ const Books: React.FC<PropsType> = props => {
 
 						</div>
 						<div className="formElement">
-							<Field id="book-cover" name="text" type="file" accept="text/plain"
-							       className="formElement__element"/>
+							<input className="formElement__element" name="text" type="file" accept="text/plain"
+								onChange={(event: SyntheticEvent<HTMLInputElement>) => setTextFile(event.currentTarget.files![0])}
+							/>
 							{errors.text && touched.text ? (
 								<div className="formElement__hint">{errors.text}</div>
 							) : null}
