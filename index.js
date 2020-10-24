@@ -6,7 +6,6 @@ const graphqlHTTP = require('express-graphql')
 const cors = require('cors')
 const schema = require("./graphql/schema")
 const resolver = require("./graphql/resolver")
-const {graphqlUploadExpress} = require('graphql-upload')
 
 const app = express()
 
@@ -17,7 +16,6 @@ app.use(express.static('public'))
 
 app.use(
 	'/graphql',
-	graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 1 }),
 	graphqlHTTP({
 		schema,
 		rootValue: resolver,

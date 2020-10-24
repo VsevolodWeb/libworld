@@ -5,10 +5,10 @@ const {readCategory} = require("../resolvers/category.resolver")
 const decodeBase64Image = require("../../helpers/decodeBase64Image")
 
 module.exports = {
-	async createBook({book}, {file}) {
+	async createBook({book}, {text}) {
 		try {
-			console.log(file)
-			const { stream, mimetype } = await file;
+			console.log(text)
+			const { stream, mimetype } = await text;
 
 			console.log(stream, mimetype)
 

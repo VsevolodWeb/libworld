@@ -11,7 +11,8 @@ export const booksAPI = {
                                 cover: "${book.cover}",
                                 author: "${book.author}",
                                 categoryId: "${book.categoryId}",
-                                year: ${book.year}}) {
+                                year: ${book.year},
+                                text: ${book.text}}) {
                 _id
                 name
                 description

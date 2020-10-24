@@ -1,6 +1,6 @@
-const {buildSchema} = require("graphql")
-const category = require("./schemas/category.schema")
-const book = require("./schemas/book.schema")
+const {buildSchema} = require('graphql')
+const category = require('./schemas/category.schema')
+const book = require('./schemas/book.schema')
 
 module.exports = buildSchema(`
 	${category.types}
