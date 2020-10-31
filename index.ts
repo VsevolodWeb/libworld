@@ -1,16 +1,15 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const config = require('config')
-const mongoose = require('mongoose')
-const graphqlHTTP = require('express-graphql')
-const cors = require('cors')
-const schema = require("./graphql/schema")
-const resolver = require("./graphql/resolver")
+import express from 'express'
+import bodyParser from 'body-parser'
+import config from 'config'
+import mongoose from 'mongoose'
+import graphqlHTTP from 'express-graphql'
+import cors from 'cors'
+import schema from "./graphql/schema"
+import resolver from "./graphql/resolver"
 
 const app = express()
 
-app.use(bodyParser.json({limit: '3mb', extended: true}))
-app.use(express.json({extended: true}))
+app.use(bodyParser.json({limit: '3mb'}))
 app.use(cors())
 app.use(express.static('public'))
 
@@ -23,7 +22,7 @@ app.use(
 	})
 )
 
-const PORT = config.get('port') || 5000;
+const PORT = config.get<number>('port') || 5000;
 
 (async () => {
 	try {
@@ -34,9 +33,7 @@ const PORT = config.get('port') || 5000;
 			useFindAndModify: false
 		})
 
-		app.listen(PORT, (error) => {
-			if (error) throw error
-
+		app.listen(PORT, () => {
 			console.log(`App has been started on port ${PORT}...`)
 		})
 	} catch (e) {
